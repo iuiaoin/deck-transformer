@@ -24,7 +24,7 @@
     .slide {
       width: 1280px; height: 720px; background-color: #F7F4EF;
       position: relative; overflow: hidden; box-sizing: border-box;
-      display: flex; flex-direction: column; padding: 50px 80px 40px;
+      display: flex; flex-direction: column; padding: 45px 80px 38px;
     }
     @keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     h1 {
@@ -32,7 +32,7 @@
       letter-spacing: -0.5px; animation: fadeInContent 0.6s ease-out;
     }
     .subtitle {
-      font-size: 16px; color: #E07A59; font-weight: 600; margin: 0 0 22px;
+      font-size: 16px; color: #E07A59; font-weight: 600; margin: 0 0 14px;
       animation: fadeInContent 0.6s ease-out 0.1s forwards; opacity: 0;
     }
     .content-area {
@@ -40,15 +40,15 @@
       animation: fadeInContent 0.8s ease-out 0.2s forwards; opacity: 0;
     }
     .diagram-col { flex: 0.85; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .info-col { flex: 1.15; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+    .info-col { flex: 1.15; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
     /* Decoder layer diagram */
     .dec-layer {
       width: 340px; display: flex; flex-direction: column; align-items: center;
       position: relative;
     }
     .block-box {
-      width: 285px; padding: 11px 0; border-radius: 8px; text-align: center;
-      font-size: 13px; font-weight: 700;
+      width: 285px; padding: 7px 0; border-radius: 8px; text-align: center;
+      font-size: 12px; font-weight: 700;
     }
     .block-input { background: #2B2A27; color: #F7F4EF; }
     .block-ln { background: #FBF8F5; border: 1px solid #EAE0D9; color: #5D4E42; font-weight: 600; font-size: 12px; }
@@ -57,11 +57,11 @@
     .block-ffn { background: #5D4E42; color: #F7F4EF; }
     .block-output { background: #2B2A27; color: #F7F4EF; }
     .block-add {
-      width: 26px; height: 26px; border-radius: 50%; border: 2px solid #9E9086;
+      width: 22px; height: 22px; border-radius: 50%; border: 2px solid #9E9086;
       background: #F7F4EF; display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 700; color: #9E9086;
+      font-size: 12px; font-weight: 700; color: #9E9086;
     }
-    .arrow-down { color: #9E9086; font-size: 14px; line-height: 1; padding: 2px 0; }
+    .arrow-down { color: #9E9086; font-size: 12px; line-height: 1; padding: 1px 0; }
     .enc-input-arrow {
       position: absolute; left: -70px; display: flex; align-items: center;
       gap: 6px; font-size: 12px; font-weight: 700; white-space: nowrap;
@@ -79,14 +79,14 @@
     .ml-2 { color: #3D7A5A; background: rgba(159,211,184,0.1); }
     .ml-3 { color: #5D4E42; background: rgba(93,78,66,0.08); }
     .times-label {
-      margin-top: 10px; font-size: 13px; font-weight: 700; color: #E07A59;
-      background: rgba(224,122,89,0.08); padding: 5px 14px; border-radius: 6px;
+      margin-top: 5px; font-size: 13px; font-weight: 700; color: #E07A59;
+      background: rgba(224,122,89,0.08); padding: 4px 14px; border-radius: 6px;
     }
     /* Module cards */
     .module-card {
       display: flex; gap: 14px; align-items: flex-start;
       background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px;
-      padding: 14px 16px;
+      padding: 10px 14px;
     }
     .mod-num {
       width: 30px; height: 30px; border-radius: 8px; display: flex;
@@ -101,13 +101,13 @@
     .mod-text strong { color: #2B2A27; }
     .autoregressive-note {
       background: rgba(224,122,89,0.06); border-left: 3px solid #E07A59;
-      padding: 12px 16px; border-radius: 0 8px 8px 0;
+      padding: 8px 14px; border-radius: 0 8px 8px 0;
     }
     .autoregressive-note p { font-size: 13px; color: #5D4E42; margin: 0; line-height: 1.5; }
     .autoregressive-note strong { color: #2B2A27; }
     .vs-encoder {
       font-size: 12px; color: #9E9086; background: rgba(158,144,134,0.08);
-      padding: 8px 14px; border-radius: 6px; text-align: center;
+      padding: 6px 12px; border-radius: 6px; text-align: center;
     }
     .vs-encoder strong { color: #5D4E42; }
     .takeaway {
@@ -142,7 +142,7 @@
           <div class="block-box block-cross" style="position:relative;">
             Cross-Attention
             <div class="module-label ml-2" style="top:2px;">Module 2</div>
-            <div class="enc-input-arrow" style="top:4px;">
+            <div class="enc-input-arrow" style="top:-7px;">
               <div class="enc-input-box">Encoder<br/>Output</div>
               <span class="enc-arrow">&rarr;</span>
             </div>
