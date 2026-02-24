@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Transformer Architecture</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap');
+    body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background-color: #e0e0e0;
+      font-family: 'Inter', sans-serif;
+    }
+    html, body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+    }
+    .slide {
+      width: 1280px; height: 720px; background-color: #F7F4EF;
+      position: relative; overflow: hidden; box-sizing: border-box;
+      display: flex; flex-direction: column; padding: 45px 70px 38px;
+    }
+    @keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    h1 {
+      font-size: 38px; font-weight: 700; color: #2B2A27; margin: 0 0 5px;
+      letter-spacing: -0.5px; animation: fadeInContent 0.6s ease-out;
+    }
+    .subtitle {
+      font-size: 15px; color: #E07A59; font-weight: 600; margin: 0 0 16px;
+      animation: fadeInContent 0.6s ease-out 0.1s forwards; opacity: 0;
+    }
+    .content-area {
+      display: flex; gap: 36px; flex: 1;
+      animation: fadeInContent 0.8s ease-out 0.2s forwards; opacity: 0;
+    }
+    .arch-col { flex: 1.2; display: flex; justify-content: center; align-items: center; }
+    .api-col { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+    /* Architecture diagram */
+    .arch-diagram {
+      display: flex; gap: 24px; align-items: flex-end;
+    }
+    .tower {
+      display: flex; flex-direction: column; align-items: center; width: 210px;
+    }
+    .tower-label {
+      font-size: 14px; font-weight: 700; color: #2B2A27; margin-bottom: 8px;
+      padding: 4px 12px; border-radius: 4px;
+    }
+    .tower-label.enc-l { background: rgba(224,122,89,0.1); }
+    .tower-label.dec-l { background: rgba(159,211,184,0.1); }
+    .t-block {
+      width: 190px; padding: 8px 0; border-radius: 6px; text-align: center;
+      font-size: 11px; font-weight: 600; margin-bottom: 3px;
+    }
+    .t-emb { background: #2B2A27; color: #F7F4EF; }
+    .t-pe { background: #5D4E42; color: #F7F4EF; }
+    .t-sa { background: #E07A59; color: #F7F4EF; }
+    .t-msa { background: #E07A59; color: #F7F4EF; }
+    .t-ca { background: #9FD3B8; color: #2B2A27; }
+    .t-ff { background: rgba(93,78,66,0.7); color: #F7F4EF; }
+    .t-norm { background: #FBF8F5; border: 1px solid #EAE0D9; color: #9E9086; font-size: 10px; }
+    .t-linear { background: #4A3F35; color: #F7F4EF; }
+    .t-softmax { background: #2B2A27; color: #F7F4EF; }
+    .t-spacer { height: 4px; }
+    .t-layer-group {
+      border: 1px dashed #EAE0D9; border-radius: 8px; padding: 8px 6px;
+      margin-bottom: 4px; width: 200px; display: flex; flex-direction: column;
+      align-items: center; gap: 3px;
+    }
+    .t-layer-label { font-size: 10px; color: #9E9086; font-weight: 600; margin-top: 2px; }
+    .t-arrow { color: #9E9086; font-size: 12px; padding: 2px 0; }
+    .memory-arrow {
+      display: flex; align-items: center; gap: 4px; font-size: 11px;
+      color: #9FD3B8; font-weight: 700; white-space: nowrap;
+      align-self: flex-start; margin: 4px 0;
+    }
+    /* API section */
+    .api-card {
+      background: #2B2A27; border-radius: 10px; padding: 14px 18px;
+    }
+    .api-title {
+      font-size: 12px; font-weight: 700; color: #9E9086; margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .api-code {
+      font-family: 'Source Code Pro', monospace; font-size: 13px;
+      line-height: 1.6; color: #E8E4DF;
+    }
+    .api-code .fn { color: #E07A59; }
+    .api-code .cm { color: #7A7067; }
+    .api-code .kw { color: #9FD3B8; }
+    .api-code .op { color: #C4A882; }
+    /* Classes grid */
+    .classes-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .class-chip {
+      background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 6px;
+      padding: 8px 12px; font-size: 12px; text-align: center;
+    }
+    .class-chip .class-name {
+      font-family: 'Source Code Pro', monospace; font-weight: 700;
+      color: #2B2A27; font-size: 12px;
+    }
+    .class-chip .class-desc { color: #9E9086; font-size: 11px; margin-top: 2px; }
+    /* Masks */
+    .masks-row {
+      display: flex; gap: 10px;
+    }
+    .mask-card {
+      flex: 1; background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .mask-card h4 {
+      font-size: 12px; font-weight: 700; color: #2B2A27; margin: 0 0 4px;
+      font-family: 'Source Code Pro', monospace;
+    }
+    .mask-card p { font-size: 11px; color: #5D4E42; margin: 0; line-height: 1.4; }
+    .takeaway {
+      margin-top: auto; padding-top: 10px; border-top: 1px solid #EAE0D9;
+      font-size: 14px; color: #2B2A27; font-weight: 600; line-height: 1.5;
+      animation: fadeInContent 0.6s ease-out 0.5s forwards; opacity: 0;
+    }
+    .takeaway span { color: #E07A59; }
+    .footer { position: absolute; bottom: 30px; right: 60px; font-size: 14px; color: #9E9086; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <h1>Full Transformer: Wiring It All Together</h1>
+    <p class="subtitle">Source &rarr; Encoder &times;N &rarr; memory &rarr; Decoder &times;N &rarr; Linear &rarr; Softmax &rarr; output.</p>
+    <div class="content-area">
+      <div class="arch-col">
+        <div class="arch-diagram">
+          <!-- Encoder Tower -->
+          <div class="tower">
+            <div class="tower-label enc-l">Encoder</div>
+            <div class="t-block t-emb">Input Embedding</div>
+            <div class="t-block t-pe">+ Positional Encoding</div>
+            <div class="t-arrow">&darr;</div>
+            <div class="t-layer-group">
+              <div class="t-block t-norm">LayerNorm</div>
+              <div class="t-block t-sa">Multi-Head Self-Attention</div>
+              <div class="t-block t-norm">Add &amp; Norm</div>
+              <div class="t-block t-ff">Feed-Forward</div>
+              <div class="t-block t-norm">Add &amp; Norm</div>
+              <div class="t-layer-label">&times; N layers</div>
+            </div>
+            <div class="t-arrow">&darr;</div>
+            <div class="t-block t-emb" style="font-size:10px;">Encoder Output (memory)</div>
+          </div>
+          <!-- Arrow between -->
+          <div style="display:flex;flex-direction:column;justify-content:center;gap:4px;padding-bottom:60px;">
+            <div class="memory-arrow">&rarr; K, V</div>
+          </div>
+          <!-- Decoder Tower -->
+          <div class="tower">
+            <div class="tower-label dec-l">Decoder</div>
+            <div class="t-block t-emb">Output Embedding</div>
+            <div class="t-block t-pe">+ Positional Encoding</div>
+            <div class="t-arrow">&darr;</div>
+            <div class="t-layer-group">
+              <div class="t-block t-norm">LayerNorm</div>
+              <div class="t-block t-msa">Masked Self-Attention</div>
+              <div class="t-block t-norm">Add &amp; Norm</div>
+              <div class="t-block t-ca">Cross-Attention</div>
+              <div class="t-block t-norm">Add &amp; Norm</div>
+              <div class="t-block t-ff">Feed-Forward</div>
+              <div class="t-block t-norm">Add &amp; Norm</div>
+              <div class="t-layer-label">&times; N layers</div>
+            </div>
+            <div class="t-arrow">&darr;</div>
+            <div class="t-block t-linear">Linear</div>
+            <div class="t-block t-softmax">Softmax</div>
+          </div>
+        </div>
+      </div>
+      <div class="api-col">
+        <div class="api-card">
+          <div class="api-title">PyTorch nn.Transformer</div>
+          <div class="api-code">model = nn.<span class="fn">Transformer</span>(
+  d_model=<span class="op">512</span>,       <span class="cm"># feature dimension</span>
+  nhead=<span class="op">8</span>,           <span class="cm"># attention heads</span>
+  num_encoder_layers=<span class="op">6</span>,
+  num_decoder_layers=<span class="op">6</span>,
+  dim_feedforward=<span class="op">2048</span> <span class="cm"># FFN hidden dim</span>
+)</div>
+        </div>
+        <div class="classes-grid">
+          <div class="class-chip"><div class="class-name">TransformerEncoderLayer</div><div class="class-desc">Single encoder layer</div></div>
+          <div class="class-chip"><div class="class-name">TransformerEncoder</div><div class="class-desc">Stacks N layers</div></div>
+          <div class="class-chip"><div class="class-name">TransformerDecoderLayer</div><div class="class-desc">Single decoder layer</div></div>
+          <div class="class-chip"><div class="class-name">TransformerDecoder</div><div class="class-desc">Stacks N layers</div></div>
+        </div>
+        <div class="api-card">
+          <div class="api-title">Forward Pass</div>
+          <div class="api-code"><span class="cm"># Encoder: source &rarr; memory</span>
+memory = model.<span class="fn">encoder</span>(src, src_padding_mask)
+
+<span class="cm"># Decoder: target + memory &rarr; output</span>
+output = model.<span class="fn">decoder</span>(tgt, memory, tgt_mask)</div>
+        </div>
+        <div class="masks-row">
+          <div class="mask-card">
+            <h4>src_padding_mask</h4>
+            <p>Masks padding tokens in variable-length source sequences</p>
+          </div>
+          <div class="mask-card">
+            <h4>tgt_mask</h4>
+            <p>Causal upper-triangular mask for autoregressive decoding</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="takeaway"><span>Takeaway:</span> 4 classes, 5 key hyperparameters &mdash; that's the entire Transformer in PyTorch.</div>
+    <div class="footer">13 / 15</div>
+  </div>
+</body>
+</html>

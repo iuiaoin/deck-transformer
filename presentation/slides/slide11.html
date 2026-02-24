@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Encoder</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap');
+    body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background-color: #e0e0e0;
+      font-family: 'Inter', sans-serif;
+    }
+    html, body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+    }
+    .slide {
+      width: 1280px; height: 720px; background-color: #F7F4EF;
+      position: relative; overflow: hidden; box-sizing: border-box;
+      display: flex; flex-direction: column; padding: 50px 80px 40px;
+    }
+    @keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    h1 {
+      font-size: 40px; font-weight: 700; color: #2B2A27; margin: 0 0 6px;
+      letter-spacing: -0.5px; animation: fadeInContent 0.6s ease-out;
+    }
+    .subtitle {
+      font-size: 16px; color: #E07A59; font-weight: 600; margin: 0 0 24px;
+      animation: fadeInContent 0.6s ease-out 0.1s forwards; opacity: 0;
+    }
+    .content-area {
+      display: flex; gap: 44px; flex: 1;
+      animation: fadeInContent 0.8s ease-out 0.2s forwards; opacity: 0;
+    }
+    .diagram-col { flex: 0.9; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .info-col { flex: 1.1; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+    /* Encoder layer diagram */
+    .enc-layer {
+      width: 320px; display: flex; flex-direction: column; align-items: center; gap: 0;
+      position: relative;
+    }
+    .block-box {
+      width: 280px; padding: 14px 0; border-radius: 10px; text-align: center;
+      font-size: 14px; font-weight: 700; position: relative;
+    }
+    .block-input { background: #2B2A27; color: #F7F4EF; }
+    .block-ln { background: #FBF8F5; border: 1px solid #EAE0D9; color: #5D4E42; font-weight: 600; }
+    .block-attn { background: #E07A59; color: #F7F4EF; }
+    .block-ffn { background: #5D4E42; color: #F7F4EF; }
+    .block-output { background: #2B2A27; color: #F7F4EF; }
+    .block-add {
+      width: 32px; height: 32px; border-radius: 50%; border: 2px solid #9FD3B8;
+      background: #F7F4EF; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: #9FD3B8;
+    }
+    .arrow-down { color: #9E9086; font-size: 16px; line-height: 1; padding: 3px 0; }
+    .residual-label {
+      position: absolute; right: -90px; font-size: 11px; color: #9FD3B8;
+      font-weight: 600; white-space: nowrap;
+    }
+    .residual-bracket {
+      position: absolute; right: -24px; width: 16px;
+      border: 2px solid #9FD3B8; border-left: none; border-radius: 0 6px 6px 0;
+    }
+    .times-label {
+      margin-top: 12px; font-size: 14px; font-weight: 700; color: #E07A59;
+      background: rgba(224,122,89,0.08); padding: 6px 16px; border-radius: 6px;
+    }
+    /* Info cards */
+    .component-card {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px;
+      padding: 14px 18px;
+    }
+    .comp-icon {
+      width: 36px; height: 36px; border-radius: 8px; display: flex;
+      align-items: center; justify-content: center; font-size: 14px;
+      font-weight: 700; color: #F7F4EF; flex-shrink: 0;
+    }
+    .comp-icon.attn { background: #E07A59; }
+    .comp-icon.ffn { background: #5D4E42; }
+    .comp-icon.ln { background: #9E9086; }
+    .comp-icon.res { background: #9FD3B8; }
+    .comp-text h3 { font-size: 15px; font-weight: 700; color: #2B2A27; margin: 0 0 4px; }
+    .comp-text p { font-size: 13px; color: #5D4E42; margin: 0; line-height: 1.45; }
+    .comp-text .jargon { font-size: 11px; color: #9E9086; font-style: italic; margin-top: 3px; display: block; }
+    .takeaway {
+      margin-top: auto; padding-top: 10px; border-top: 1px solid #EAE0D9;
+      font-size: 15px; color: #2B2A27; font-weight: 600; line-height: 1.5;
+      animation: fadeInContent 0.6s ease-out 0.5s forwards; opacity: 0;
+    }
+    .takeaway span { color: #E07A59; }
+    .footer { position: absolute; bottom: 30px; right: 60px; font-size: 14px; color: #9E9086; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <h1>The Encoder: Self-Attention + FFN + Residual</h1>
+    <p class="subtitle">Each Encoder layer: two sub-layers, each with Add &amp; LayerNorm. Stack N = 6 layers.</p>
+    <div class="content-area">
+      <div class="diagram-col">
+        <div class="enc-layer">
+          <div class="block-box block-input">Input (Embedding + PE)</div>
+          <div class="arrow-down">&darr;</div>
+          <div class="block-box block-ln">LayerNorm</div>
+          <div class="arrow-down">&darr;</div>
+          <div class="block-box block-attn" style="position:relative;">
+            Multi-Head Self-Attention
+            <div class="residual-bracket" style="height:90px; top:-48px;"></div>
+            <div class="residual-label" style="top:-10px;">+ residual</div>
+          </div>
+          <div class="arrow-down">&darr;</div>
+          <div class="block-add">+</div>
+          <div class="arrow-down">&darr;</div>
+          <div class="block-box block-ln">LayerNorm</div>
+          <div class="arrow-down">&darr;</div>
+          <div class="block-box block-ffn" style="position:relative;">
+            Feed-Forward Network
+            <div class="residual-bracket" style="height:90px; top:-48px;"></div>
+            <div class="residual-label" style="top:-10px;">+ residual</div>
+          </div>
+          <div class="arrow-down">&darr;</div>
+          <div class="block-add">+</div>
+          <div class="arrow-down">&darr;</div>
+          <div class="block-box block-output">Encoder Output</div>
+        </div>
+        <div class="times-label">&times; 6 layers</div>
+      </div>
+      <div class="info-col">
+        <div class="component-card">
+          <div class="comp-icon attn">SA</div>
+          <div class="comp-text">
+            <h3>Multi-Head Self-Attention</h3>
+            <p>Captures relationships <strong>between positions</strong>. Each token attends to all others in the sequence.</p>
+          </div>
+        </div>
+        <div class="component-card">
+          <div class="comp-icon ffn">FF</div>
+          <div class="comp-text">
+            <h3>Feed-Forward Network (FFN)</h3>
+            <p>Two linear layers: 512 &rarr; 2048 &rarr; 512. Processes each position <strong>independently</strong> &mdash; fuses feature dimensions.</p>
+            <span class="jargon">Like a 1&times;1 convolution &mdash; same parameters for every position (parameter sharing).</span>
+          </div>
+        </div>
+        <div class="component-card">
+          <div class="comp-icon ln">LN</div>
+          <div class="comp-text">
+            <h3>LayerNorm</h3>
+            <p>Normalizes activations <strong>within each sample</strong> to stabilize training across deep layers.</p>
+            <span class="jargon">LayerNorm &mdash; normalizes each sample's feature vector to zero mean, unit variance.</span>
+          </div>
+        </div>
+        <div class="component-card">
+          <div class="comp-icon res">+</div>
+          <div class="comp-text">
+            <h3>Residual Connection</h3>
+            <p><code style="font-family:'Source Code Pro';font-size:13px;color:#E07A59;">out = x + SubLayer(LayerNorm(x))</code></p>
+            <p>Lets the bottom-layer signal (including PE) flow directly to the top &mdash; prevents gradient vanishing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="takeaway"><span>Takeaway:</span> Encoder layer = attention (between positions) + FFN (within positions) + residual shortcuts.</div>
+    <div class="footer">11 / 15</div>
+  </div>
+</body>
+</html>

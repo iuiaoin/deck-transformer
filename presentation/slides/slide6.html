@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Attention</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap');
+    body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background-color: #e0e0e0;
+      font-family: 'Inter', sans-serif;
+    }
+    html, body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+    }
+    .slide {
+      width: 1280px; height: 720px; background-color: #F7F4EF;
+      position: relative; overflow: hidden; box-sizing: border-box;
+      display: flex; flex-direction: column; padding: 50px 80px 40px;
+    }
+    @keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    h1 {
+      font-size: 44px; font-weight: 700; color: #2B2A27; margin: 0 0 6px;
+      letter-spacing: -0.5px; animation: fadeInContent 0.6s ease-out;
+    }
+    .subtitle {
+      font-size: 17px; color: #E07A59; font-weight: 600; margin: 0 0 28px;
+      animation: fadeInContent 0.6s ease-out 0.1s forwards; opacity: 0;
+    }
+    .content-area {
+      display: flex; gap: 40px; flex: 1;
+      animation: fadeInContent 0.8s ease-out 0.2s forwards; opacity: 0;
+    }
+    .diagram-col { flex: 1.2; display: flex; flex-direction: column; justify-content: center; }
+    .info-col { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    /* Diagram */
+    .flow-diagram {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .input-box {
+      background: #2B2A27; color: #F7F4EF; padding: 12px 32px;
+      border-radius: 8px; font-size: 16px; font-weight: 600;
+      text-align: center; width: 280px;
+    }
+    .input-box .label { font-size: 12px; color: #9E9086; font-weight: 500; }
+    .split-arrows {
+      display: flex; justify-content: center; gap: 60px; padding: 4px 0;
+    }
+    .arrow-down { color: #9E9086; font-size: 20px; }
+    .projections {
+      display: flex; gap: 16px; justify-content: center;
+    }
+    .proj-box {
+      width: 120px; padding: 10px 0; border-radius: 8px; text-align: center;
+      font-size: 14px; font-weight: 700; border: 2px solid;
+    }
+    .proj-q { background: rgba(224,122,89,0.08); border-color: #E07A59; color: #E07A59; }
+    .proj-k { background: rgba(159,211,184,0.08); border-color: #9FD3B8; color: #5D8A6F; }
+    .proj-v { background: rgba(159,211,184,0.08); border-color: #9FD3B8; color: #5D8A6F; }
+    .proj-label { font-size: 11px; color: #9E9086; font-weight: 500; margin-top: 2px; }
+    .attn-block {
+      background: #E07A59; color: #F7F4EF; padding: 14px 40px;
+      border-radius: 10px; font-size: 16px; font-weight: 700;
+      text-align: center; width: 280px;
+    }
+    .output-box {
+      background: #FBF8F5; border: 2px solid #E07A59; color: #2B2A27;
+      padding: 12px 32px; border-radius: 8px; font-size: 15px; font-weight: 600;
+      text-align: center; width: 280px;
+    }
+    /* Heatmap */
+    .heatmap-section { margin-top: 16px; }
+    .heatmap-title { font-size: 13px; font-weight: 700; color: #5D4E42; margin-bottom: 8px; text-align: center; }
+    .heatmap {
+      display: grid; grid-template-columns: 50px repeat(5, 1fr); gap: 2px;
+      font-size: 11px; font-family: 'Source Code Pro', monospace;
+    }
+    .heatmap .label { display: flex; align-items: center; justify-content: flex-end;
+      padding-right: 6px; font-weight: 600; color: #5D4E42; }
+    .heatmap .header { display: flex; align-items: center; justify-content: center;
+      font-weight: 600; color: #5D4E42; height: 24px; }
+    .heatmap .cell {
+      height: 32px; display: flex; align-items: center; justify-content: center;
+      border-radius: 3px; color: #F7F4EF; font-weight: 600; font-size: 11px;
+    }
+    /* Info */
+    .info-card {
+      background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px;
+      padding: 20px; margin-bottom: 16px;
+    }
+    .info-card h3 { font-size: 16px; font-weight: 700; color: #2B2A27; margin: 0 0 10px; }
+    .info-list { list-style: none; padding: 0; margin: 0; }
+    .info-list li {
+      font-size: 15px; color: #5D4E42; line-height: 1.55; margin-bottom: 8px;
+      padding-left: 16px; position: relative;
+    }
+    .info-list li::before {
+      content: ''; position: absolute; left: 0; top: 8px;
+      width: 6px; height: 6px; border-radius: 50%; background: #E07A59;
+    }
+    .code-inline {
+      font-family: 'Source Code Pro', monospace; font-size: 14px;
+      background: rgba(224,122,89,0.08); padding: 4px 10px; border-radius: 4px;
+      color: #E07A59; font-weight: 600; display: inline-block; margin-top: 4px;
+    }
+    .jargon { font-size: 12px; color: #9E9086; font-style: italic; }
+    .takeaway {
+      margin-top: auto; padding-top: 12px; border-top: 1px solid #EAE0D9;
+      font-size: 15px; color: #2B2A27; font-weight: 600; line-height: 1.5;
+      animation: fadeInContent 0.6s ease-out 0.5s forwards; opacity: 0;
+    }
+    .takeaway span { color: #E07A59; }
+    .footer { position: absolute; bottom: 30px; right: 60px; font-size: 14px; color: #9E9086; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <h1>Self-Attention: Q = K = V from Same Source</h1>
+    <p class="subtitle">Each token learns its relationship to every other token in the same sequence.</p>
+    <div class="content-area">
+      <div class="diagram-col">
+        <div class="flow-diagram">
+          <div class="input-box">
+            Input Sequence X
+            <div class="label">"The cat sat on the mat"</div>
+          </div>
+          <div class="split-arrows">
+            <span class="arrow-down">&darr; W<sub>Q</sub></span>
+            <span class="arrow-down">&darr; W<sub>K</sub></span>
+            <span class="arrow-down">&darr; W<sub>V</sub></span>
+          </div>
+          <div class="projections">
+            <div class="proj-box proj-q">Q<div class="proj-label">Query</div></div>
+            <div class="proj-box proj-k">K<div class="proj-label">Key</div></div>
+            <div class="proj-box proj-v">V<div class="proj-label">Value</div></div>
+          </div>
+          <div class="arrow-down">&darr;</div>
+          <div class="attn-block">Scaled Dot-Product Attention</div>
+          <div class="arrow-down">&darr;</div>
+          <div class="output-box">Context-aware output</div>
+        </div>
+        <div class="heatmap-section">
+          <div class="heatmap-title">Example: Attention weights for "cat"</div>
+          <div class="heatmap">
+            <div></div>
+            <div class="header">The</div><div class="header">cat</div><div class="header">sat</div><div class="header">on</div><div class="header">mat</div>
+            <div class="label">cat &rarr;</div>
+            <div class="cell" style="background:rgba(224,122,89,0.25);">.08</div>
+            <div class="cell" style="background:rgba(224,122,89,0.90);">.35</div>
+            <div class="cell" style="background:rgba(224,122,89,0.60);">.28</div>
+            <div class="cell" style="background:rgba(224,122,89,0.20);">.06</div>
+            <div class="cell" style="background:rgba(224,122,89,0.50);">.23</div>
+          </div>
+        </div>
+      </div>
+      <div class="info-col">
+        <div class="info-card">
+          <h3>How it works</h3>
+          <ul class="info-list">
+            <li>Same input X passes through <strong>3 separate</strong> linear projections &rarr; Q, K, V</li>
+            <li>Same source, <strong>different learned</strong> transformations</li>
+            <li>Each token attends to all others (including itself)</li>
+            <li>"bank" near "river" gets different attention than "bank" near "money"</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>In code</h3>
+          <div class="code-inline">attention(x, x, x)</div>
+          <p class="jargon" style="margin-top:8px;"><strong>Embedding</strong> &mdash; a dense vector representing a word; similar words have similar vectors.</p>
+        </div>
+      </div>
+    </div>
+    <div class="takeaway"><span>Takeaway:</span> Self-attention &mdash; every token queries every other token in the same sequence.</div>
+    <div class="footer">6 / 15</div>
+  </div>
+</body>
+</html>

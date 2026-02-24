@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why Attention? The Sequential Bottleneck</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background-color: #e0e0e0;
+      font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    html, body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+    }
+    .slide {
+      width: 1280px; height: 720px; background-color: #F7F4EF;
+      position: relative; overflow: hidden; box-sizing: border-box;
+      display: flex; flex-direction: column; padding: 55px 80px 40px;
+    }
+    @keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    h1 {
+      font-size: 44px; font-weight: 700; color: #2B2A27; margin: 0 0 8px;
+      letter-spacing: -0.5px; animation: fadeInContent 0.6s ease-out;
+    }
+    .subtitle {
+      font-size: 18px; color: #E07A59; font-weight: 600; margin: 0 0 30px;
+      animation: fadeInContent 0.6s ease-out 0.1s forwards; opacity: 0;
+    }
+    .comparison {
+      display: flex; gap: 40px; flex: 1; align-items: stretch;
+      animation: fadeInContent 0.8s ease-out 0.2s forwards; opacity: 0;
+    }
+    .panel {
+      flex: 1; background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 12px;
+      padding: 28px; display: flex; flex-direction: column;
+    }
+    .panel-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+    }
+    .panel-icon {
+      width: 36px; height: 36px; border-radius: 8px; display: flex;
+      align-items: center; justify-content: center; font-size: 18px; font-weight: 700;
+      color: #F7F4EF; flex-shrink: 0;
+    }
+    .panel-icon.rnn { background-color: #9E9086; }
+    .panel-icon.attn { background-color: #E07A59; }
+    .panel-title { font-size: 22px; font-weight: 700; color: #2B2A27; }
+    .panel-label { font-size: 13px; color: #9E9086; font-weight: 500; }
+    .diagram-area {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px; min-height: 180px;
+    }
+    /* RNN chain diagram */
+    .rnn-chain { display: flex; align-items: center; gap: 4px; }
+    .rnn-node {
+      width: 52px; height: 52px; border-radius: 50%; border: 2px solid #9E9086;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; color: #5D4E42; background: #F7F4EF;
+    }
+    .rnn-arrow { font-size: 18px; color: #9E9086; }
+    .rnn-node.faded { opacity: 0.35; border-style: dashed; }
+    .signal-label { font-size: 11px; color: #9E9086; text-align: center; margin-top: 8px; }
+    /* Attention graph diagram */
+    .attn-graph { position: relative; width: 280px; height: 200px; }
+    .attn-node {
+      position: absolute; width: 46px; height: 46px; border-radius: 50%;
+      border: 2px solid #E07A59; display: flex; align-items: center;
+      justify-content: center; font-size: 12px; font-weight: 600;
+      color: #5D4E42; background: #F7F4EF; z-index: 2;
+    }
+    .attn-node:nth-child(1) { top: 10px; left: 50%; transform: translateX(-50%); }
+    .attn-node:nth-child(2) { top: 80px; left: 10px; }
+    .attn-node:nth-child(3) { top: 80px; right: 10px; }
+    .attn-node:nth-child(4) { bottom: 10px; left: 30%; transform: translateX(-50%); }
+    .attn-node:nth-child(5) { bottom: 10px; right: 30%; transform: translateX(50%); }
+    .attn-lines {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    }
+    .attn-lines line { stroke: #E07A59; stroke-width: 1; opacity: 0.25; }
+    .bullet-list { list-style: none; padding: 0; margin: 0; }
+    .bullet-list li {
+      font-size: 16px; color: #5D4E42; line-height: 1.5; margin-bottom: 8px;
+      padding-left: 18px; position: relative;
+    }
+    .bullet-list li::before {
+      content: ''; position: absolute; left: 0; top: 8px;
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .panel:first-child .bullet-list li::before { background-color: #9E9086; }
+    .panel:last-child .bullet-list li::before { background-color: #E07A59; }
+    .takeaway {
+      margin-top: auto; padding-top: 16px; border-top: 1px solid #EAE0D9;
+      font-size: 16px; color: #2B2A27; font-weight: 600; line-height: 1.5;
+      animation: fadeInContent 0.6s ease-out 0.5s forwards; opacity: 0;
+    }
+    .takeaway span { color: #E07A59; }
+    .footer {
+      position: absolute; bottom: 30px; right: 60px;
+      font-size: 14px; color: #9E9086; font-weight: 500;
+    }
+    .jargon {
+      font-size: 12px; color: #9E9086; font-style: italic; font-weight: 400;
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <h1>Why Attention? The Sequential Bottleneck</h1>
+    <p class="subtitle">RNN processes tokens one-by-one. Attention processes all tokens at once.</p>
+    <div class="comparison">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-icon rnn">R</div>
+          <div>
+            <div class="panel-title">RNN</div>
+            <div class="panel-label">Recurrent Neural Network &mdash; processes sequences step-by-step</div>
+          </div>
+        </div>
+        <div class="diagram-area">
+          <div>
+            <div class="rnn-chain">
+              <div class="rnn-node">x<sub>1</sub></div>
+              <div class="rnn-arrow">&rarr;</div>
+              <div class="rnn-node">x<sub>2</sub></div>
+              <div class="rnn-arrow">&rarr;</div>
+              <div class="rnn-node">x<sub>3</sub></div>
+              <div class="rnn-arrow">&rarr;</div>
+              <div class="rnn-node faded">x<sub>4</sub></div>
+              <div class="rnn-arrow" style="opacity:0.3">&rarr;</div>
+              <div class="rnn-node faded">x<sub>5</sub></div>
+            </div>
+            <div class="signal-label">Signal fades over distance &rarr;</div>
+          </div>
+        </div>
+        <ul class="bullet-list">
+          <li>Sequential &rarr; no GPU parallelism</li>
+          <li>Long-range dependencies decay</li>
+          <li>Token 1 struggles to reach token 100</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-icon attn">A</div>
+          <div>
+            <div class="panel-title">Attention</div>
+            <div class="panel-label">All-pair computation &mdash; every token connects to every token</div>
+          </div>
+        </div>
+        <div class="diagram-area">
+          <svg class="attn-graph" viewBox="0 0 280 200">
+            <!-- connection lines -->
+            <line x1="140" y1="33" x2="33" y2="103" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <line x1="140" y1="33" x2="247" y2="103" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <line x1="140" y1="33" x2="84" y2="167" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <line x1="140" y1="33" x2="196" y2="167" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <line x1="33" y1="103" x2="247" y2="103" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <line x1="33" y1="103" x2="84" y2="167" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <line x1="33" y1="103" x2="196" y2="167" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <line x1="247" y1="103" x2="84" y2="167" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <line x1="247" y1="103" x2="196" y2="167" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <line x1="84" y1="167" x2="196" y2="167" stroke="#E07A59" stroke-width="1" opacity="0.2"/>
+            <!-- nodes -->
+            <circle cx="140" cy="33" r="22" fill="#F7F4EF" stroke="#E07A59" stroke-width="2"/>
+            <text x="140" y="37" text-anchor="middle" fill="#5D4E42" font-size="12" font-weight="600" font-family="Inter">x&#8321;</text>
+            <circle cx="33" cy="103" r="22" fill="#F7F4EF" stroke="#E07A59" stroke-width="2"/>
+            <text x="33" y="107" text-anchor="middle" fill="#5D4E42" font-size="12" font-weight="600" font-family="Inter">x&#8322;</text>
+            <circle cx="247" cy="103" r="22" fill="#F7F4EF" stroke="#E07A59" stroke-width="2"/>
+            <text x="247" y="107" text-anchor="middle" fill="#5D4E42" font-size="12" font-weight="600" font-family="Inter">x&#8323;</text>
+            <circle cx="84" cy="167" r="22" fill="#F7F4EF" stroke="#E07A59" stroke-width="2"/>
+            <text x="84" y="171" text-anchor="middle" fill="#5D4E42" font-size="12" font-weight="600" font-family="Inter">x&#8324;</text>
+            <circle cx="196" cy="167" r="22" fill="#F7F4EF" stroke="#E07A59" stroke-width="2"/>
+            <text x="196" y="171" text-anchor="middle" fill="#5D4E42" font-size="12" font-weight="600" font-family="Inter">x&#8325;</text>
+          </svg>
+        </div>
+        <ul class="bullet-list">
+          <li>Parallel &rarr; full GPU utilization</li>
+          <li>O(1) path between any two tokens</li>
+          <li>All relationships computed in one step</li>
+        </ul>
+      </div>
+    </div>
+    <div class="takeaway"><span>Takeaway:</span> Attention replaces sequential processing with parallel all-pair computation.</div>
+    <div class="footer">3 / 15</div>
+  </div>
+</body>
+</html>

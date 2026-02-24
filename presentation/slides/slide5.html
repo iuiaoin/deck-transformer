@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scaled Dot-Product Attention</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap');
+    body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background-color: #e0e0e0;
+      font-family: 'Inter', sans-serif;
+    }
+    html, body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+    }
+    .slide {
+      width: 1280px; height: 720px; background-color: #F7F4EF;
+      position: relative; overflow: hidden; box-sizing: border-box;
+      display: flex; flex-direction: column; padding: 50px 80px 40px;
+    }
+    @keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    h1 {
+      font-size: 42px; font-weight: 700; color: #2B2A27; margin: 0 0 28px;
+      letter-spacing: -0.5px; animation: fadeInContent 0.6s ease-out;
+    }
+    /* Formula box */
+    .formula-box {
+      background: #2B2A27; border-radius: 12px; padding: 22px 36px;
+      text-align: center; margin-bottom: 28px;
+      animation: fadeInContent 0.8s ease-out 0.15s forwards; opacity: 0;
+    }
+    .formula-text {
+      font-size: 28px; font-weight: 600; color: #F7F4EF;
+      font-family: 'Inter', serif; letter-spacing: 0.5px;
+    }
+    .formula-text .accent { color: #E07A59; }
+    .formula-text .mint { color: #9FD3B8; }
+    /* Steps flow */
+    .steps-flow {
+      display: flex; gap: 12px; align-items: stretch; margin-bottom: 24px;
+      animation: fadeInContent 0.8s ease-out 0.3s forwards; opacity: 0;
+    }
+    .step {
+      flex: 1; background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px;
+      padding: 18px 16px; display: flex; flex-direction: column; align-items: center;
+      text-align: center; position: relative;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%; background: #E07A59; color: #F7F4EF;
+      font-size: 14px; font-weight: 700; display: flex; align-items: center;
+      justify-content: center; margin-bottom: 10px;
+    }
+    .step-title { font-size: 15px; font-weight: 700; color: #2B2A27; margin-bottom: 6px; }
+    .step-desc { font-size: 13px; color: #5D4E42; line-height: 1.45; }
+    .step-formula {
+      font-family: 'Source Code Pro', monospace; font-size: 13px;
+      color: #E07A59; font-weight: 600; margin-top: 8px;
+      background: rgba(224,122,89,0.06); padding: 4px 10px; border-radius: 4px;
+    }
+    .step-shapes {
+      font-family: 'Source Code Pro', monospace; font-size: 11px;
+      color: #9E9086; margin-top: 6px;
+    }
+    .step-connector {
+      display: flex; align-items: center; color: #E07A59; font-size: 20px;
+      font-weight: 700; flex-shrink: 0; padding: 0 2px;
+    }
+    /* Code block */
+    .code-section {
+      animation: fadeInContent 0.8s ease-out 0.45s forwards; opacity: 0;
+    }
+    .code-label {
+      font-size: 13px; font-weight: 700; color: #5D4E42; margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .code-block {
+      background: #2B2A27; border-radius: 10px; padding: 16px 22px;
+      font-family: 'Source Code Pro', monospace; font-size: 14px;
+      line-height: 1.65; color: #E8E4DF; overflow: hidden;
+    }
+    .code-block .kw { color: #9FD3B8; }
+    .code-block .fn { color: #E07A59; }
+    .code-block .cm { color: #7A7067; }
+    .code-block .op { color: #C4A882; }
+    .takeaway {
+      margin-top: auto; padding-top: 12px; border-top: 1px solid #EAE0D9;
+      font-size: 15px; color: #2B2A27; font-weight: 600; line-height: 1.5;
+      animation: fadeInContent 0.6s ease-out 0.6s forwards; opacity: 0;
+    }
+    .takeaway span { color: #E07A59; }
+    .footer { position: absolute; bottom: 30px; right: 60px; font-size: 14px; color: #9E9086; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <h1>Scaled Dot-Product Attention</h1>
+    <div class="formula-box">
+      <div class="formula-text">
+        Attention(<span class="accent">Q</span>, <span class="mint">K</span>, <span class="mint">V</span>) = softmax(<span class="accent">Q</span> &middot; <span class="mint">K</span><sup>T</sup> / &radic;<span style="text-decoration:overline">d<sub>k</sub></span>) &middot; <span class="mint">V</span>
+      </div>
+    </div>
+    <div class="steps-flow">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Similarity</div>
+        <div class="step-desc">Dot product measures how similar Q and K are</div>
+        <div class="step-formula">Q &middot; K<sup>T</sup></div>
+        <div class="step-shapes">(n&times;d<sub>k</sub>) &times; (d<sub>k</sub>&times;n) &rarr; (n&times;n)</div>
+      </div>
+      <div class="step-connector">&rarr;</div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Scale</div>
+        <div class="step-desc">Divide by &radic;d<sub>k</sub> to keep gradients stable</div>
+        <div class="step-formula">/ &radic;d<sub>k</sub></div>
+        <div class="step-shapes">Prevents softmax saturation</div>
+      </div>
+      <div class="step-connector">&rarr;</div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Normalize</div>
+        <div class="step-desc">Softmax turns scores into probabilities (sum = 1)</div>
+        <div class="step-formula">softmax(&middot;)</div>
+        <div class="step-shapes">Each row sums to 1</div>
+      </div>
+      <div class="step-connector">&rarr;</div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Aggregate</div>
+        <div class="step-desc">Weighted sum of values using attention weights</div>
+        <div class="step-formula">&times; V</div>
+        <div class="step-shapes">(n&times;n) &times; (n&times;d<sub>v</sub>) &rarr; (n&times;d<sub>v</sub>)</div>
+      </div>
+    </div>
+    <div class="code-section">
+      <div class="code-label">Implementation (3 lines)</div>
+      <div class="code-block">scores = torch.<span class="fn">matmul</span>(query, key.<span class="fn">transpose</span>(<span class="op">-2</span>, <span class="op">-1</span>)) / math.<span class="fn">sqrt</span>(d_k)  <span class="cm"># Step 1+2</span>
+weights = scores.<span class="fn">softmax</span>(dim=<span class="op">-1</span>)                                       <span class="cm"># Step 3</span>
+output  = torch.<span class="fn">matmul</span>(weights, value)                                      <span class="cm"># Step 4</span></div>
+    </div>
+    <div class="takeaway"><span>Takeaway:</span> Dot-product + scale + softmax + weighted sum &mdash; the entire attention computation in 3 lines.</div>
+    <div class="footer">5 / 15</div>
+  </div>
+</body>
+</html>

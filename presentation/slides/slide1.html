@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cover - Understanding Transformer Architecture</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background-color: #e0e0e0;
+      font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    html, body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+    }
+    .slide {
+      width: 1280px; height: 720px;
+      background-color: #F7F4EF;
+      position: relative; overflow: hidden;
+      box-sizing: border-box;
+      display: flex; flex-direction: column; justify-content: center;
+      align-items: center; text-align: center;
+    }
+    .slide-content {
+      z-index: 2; padding: 40px;
+      animation: fadeInContent 1.2s ease-in-out forwards; opacity: 0;
+    }
+    h1 {
+      font-size: 58px; font-weight: 700; color: #2B2A27;
+      margin: 0 0 16px; letter-spacing: -1px; line-height: 1.15;
+    }
+    h2 {
+      font-size: 42px; font-weight: 600; margin: 0 0 28px;
+      background: linear-gradient(90deg, #E07A59, #A0816A);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      letter-spacing: -0.5px;
+    }
+    p.tagline {
+      font-size: 22px; color: #5D4E42; margin: 0; max-width: 700px; line-height: 1.6;
+    }
+    .divider {
+      width: 80px; height: 3px; background: linear-gradient(90deg, #E07A59, #9FD3B8);
+      margin: 0 auto 28px; border-radius: 2px;
+      animation: fadeInContent 1.2s ease-in-out 0.3s forwards; opacity: 0;
+    }
+    .footer {
+      position: absolute; bottom: 40px; left: 60px; right: 60px;
+      display: flex; justify-content: space-between; align-items: center; z-index: 2;
+      animation: fadeInContent 1.2s ease-in-out 0.4s forwards; opacity: 0;
+    }
+    .presenter { font-size: 16px; font-weight: 600; color: #2B2A27; }
+    .date { font-size: 16px; color: #5D4E42; }
+    .accent-shape { position: absolute; border-radius: 50%; opacity: 0; animation: fadeInShape 2s ease-out forwards; }
+    @keyframes fadeInShape { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .shape1 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(224,122,89,0.12) 0%, transparent 70%); top: -120px; left: -120px; }
+    .shape2 { width: 450px; height: 450px; background: radial-gradient(circle, rgba(159,211,184,0.08) 0%, transparent 70%); bottom: -180px; right: -180px; }
+    .shape3 { width: 200px; height: 200px; background: radial-gradient(circle, rgba(224,122,89,0.06) 0%, transparent 70%); top: 50%; right: -60px; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="accent-shape shape1"></div>
+    <div class="accent-shape shape2"></div>
+    <div class="accent-shape shape3"></div>
+    <div class="slide-content">
+      <h1>Understanding Transformer Architecture</h1>
+      <div class="divider"></div>
+      <h2>Attention Is All You Need</h2>
+      <p class="tagline">A visual, intuition-first guide to the architecture behind modern AI</p>
+    </div>
+    <div class="footer">
+      <div class="presenter">Technical Sharing Session</div>
+      <div class="date">February 2026</div>
+    </div>
+  </div>
+</body>
+</html>
