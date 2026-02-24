@@ -104,7 +104,7 @@
     <h1>Scaled Dot-Product Attention</h1>
     <div class="formula-box">
       <div class="formula-text">
-        Attention(<span class="accent">Q</span>, <span class="mint">K</span>, <span class="mint">V</span>) = softmax(<span class="accent">Q</span> &middot; <span class="mint">K</span><sup>T</sup> / &radic;<span style="text-decoration:overline">d<sub>k</sub></span>) &middot; <span class="mint">V</span>
+        Attention(<span class="accent">Q</span>, <span class="mint">K</span>, <span class="mint">V</span>) = softmax(<span class="accent">Q</span> &middot; <span class="mint">K</span><sup>T</sup> / <svg width="52" height="32" viewBox="0 0 52 34" style="vertical-align: -0.2em;"><path d="M 1 18 L 5 20 L 10 31 L 17 3 L 50 3" stroke="#F7F4EF" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="20" y="23" font-size="19" fill="#F7F4EF" font-family="Inter, sans-serif" font-weight="600">d</text><text x="33" y="27" font-size="13" fill="#F7F4EF" font-family="Inter, sans-serif" font-weight="600">k</text></svg>) &middot; <span class="mint">V</span>
       </div>
     </div>
     <div class="steps-flow">
@@ -119,8 +119,8 @@
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-title">Scale</div>
-        <div class="step-desc">Divide by &radic;d<sub>k</sub> to keep gradients stable</div>
-        <div class="step-formula">/ &radic;d<sub>k</sub></div>
+        <div class="step-desc">Divide by <svg width="28" height="18" viewBox="0 0 52 34" style="vertical-align: -0.15em;"><path d="M 1 18 L 5 20 L 10 31 L 17 3 L 50 3" stroke="#5D4E42" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="20" y="23" font-size="19" fill="#5D4E42" font-family="Inter, sans-serif" font-weight="500">d</text><text x="33" y="27" font-size="13" fill="#5D4E42" font-family="Inter, sans-serif" font-weight="500">k</text></svg> to keep gradients stable</div>
+        <div class="step-formula">/ <svg width="28" height="18" viewBox="0 0 52 34" style="vertical-align: -0.15em;"><path d="M 1 18 L 5 20 L 10 31 L 17 3 L 50 3" stroke="#E07A59" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="20" y="23" font-size="19" fill="#E07A59" font-family="Inter, sans-serif" font-weight="600">d</text><text x="33" y="27" font-size="13" fill="#E07A59" font-family="Inter, sans-serif" font-weight="600">k</text></svg></div>
         <div class="step-shapes">Prevents softmax saturation</div>
       </div>
       <div class="step-connector">&rarr;</div>
