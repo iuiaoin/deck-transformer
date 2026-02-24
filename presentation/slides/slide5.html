@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -110,43 +110,43 @@
     <div class="steps-flow">
       <div class="step">
         <div class="step-num">1</div>
-        <div class="step-title">Similarity</div>
-        <div class="step-desc">Dot product measures how similar Q and K are</div>
+        <div class="step-title">相似度</div>
+        <div class="step-desc">点积衡量 Q 与 K 的相似程度</div>
         <div class="step-formula">Q &middot; K<sup>T</sup></div>
         <div class="step-shapes">(n&times;d<sub>k</sub>) &times; (d<sub>k</sub>&times;n) &rarr; (n&times;n)</div>
       </div>
       <div class="step-connector">&rarr;</div>
       <div class="step">
         <div class="step-num">2</div>
-        <div class="step-title">Scale</div>
-        <div class="step-desc">Divide by &radic;d<sub>k</sub> to keep gradients stable</div>
+        <div class="step-title">缩放</div>
+        <div class="step-desc">除以 &radic;d<sub>k</sub> 以保持梯度稳定</div>
         <div class="step-formula">/ &radic;d<sub>k</sub></div>
-        <div class="step-shapes">Prevents softmax saturation</div>
+        <div class="step-shapes">防止 softmax 饱和</div>
       </div>
       <div class="step-connector">&rarr;</div>
       <div class="step">
         <div class="step-num">3</div>
-        <div class="step-title">Normalize</div>
-        <div class="step-desc">Softmax turns scores into probabilities (sum = 1)</div>
+        <div class="step-title">归一化</div>
+        <div class="step-desc">Softmax 将分数转换为概率（总和 = 1）</div>
         <div class="step-formula">softmax(&middot;)</div>
-        <div class="step-shapes">Each row sums to 1</div>
+        <div class="step-shapes">每行之和为 1</div>
       </div>
       <div class="step-connector">&rarr;</div>
       <div class="step">
         <div class="step-num">4</div>
-        <div class="step-title">Aggregate</div>
-        <div class="step-desc">Weighted sum of values using attention weights</div>
+        <div class="step-title">聚合</div>
+        <div class="step-desc">使用 Attention 权重对 Value 进行加权求和</div>
         <div class="step-formula">&times; V</div>
         <div class="step-shapes">(n&times;n) &times; (n&times;d<sub>v</sub>) &rarr; (n&times;d<sub>v</sub>)</div>
       </div>
     </div>
     <div class="code-section">
-      <div class="code-label">Implementation (3 lines)</div>
+      <div class="code-label">实现（仅 3 行）</div>
       <div class="code-block">scores = torch.<span class="fn">matmul</span>(query, key.<span class="fn">transpose</span>(<span class="op">-2</span>, <span class="op">-1</span>)) / math.<span class="fn">sqrt</span>(d_k)  <span class="cm"># Step 1+2</span>
 weights = scores.<span class="fn">softmax</span>(dim=<span class="op">-1</span>)                                       <span class="cm"># Step 3</span>
 output  = torch.<span class="fn">matmul</span>(weights, value)                                      <span class="cm"># Step 4</span></div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Dot-product + scale + softmax + weighted sum &mdash; the entire attention computation in 3 lines.</div>
+    <div class="takeaway"><span>要点：</span>点积 + 缩放 + softmax + 加权求和——整个 Attention 计算仅需 3 行代码。</div>
     <div class="footer">5 / 15</div>
   </div>
 </body>

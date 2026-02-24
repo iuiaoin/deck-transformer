@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,11 +120,11 @@
 </head>
 <body>
   <div class="slide">
-    <h1>Masked Self-Attention: No Peeking at the Future</h1>
-    <p class="subtitle">Each token can only attend to itself and previous tokens &mdash; enforced by a causal mask.</p>
+    <h1>Masked Self-Attention：禁止窥探未来</h1>
+    <p class="subtitle">每个 token 只能关注自身及之前的 token &mdash; 由 causal mask 强制保证。</p>
     <div class="content-area">
       <div class="matrix-col">
-        <div class="matrix-title">Attention Matrix (5&times;5) with Causal Mask</div>
+        <div class="matrix-title">带因果掩码的 Attention 矩阵（5&times;5）</div>
         <div class="matrix-grid">
           <div class="corner"></div>
           <div class="col-header">I</div><div class="col-header">like</div><div class="col-header">to</div><div class="col-header">learn</div><div class="col-header">NLP</div>
@@ -145,29 +145,29 @@
           <div class="pipe-label">softmax</div>
           <div class="pipe-arrow">&rarr;</div>
           <div class="pipe-step pipe-zero">0.0</div>
-          <div class="pipe-label" style="margin-left:8px;">Future positions get zero weight</div>
+          <div class="pipe-label" style="margin-left:8px;">未来位置权重为零</div>
         </div>
       </div>
       <div class="info-col">
         <div class="why-box">
-          <h3>Why mask?</h3>
-          <p>Without mask, the model sees the answer it's supposed to predict &mdash; reducing generation to a trivial copy operation.</p>
+          <h3>为何需要掩码？</h3>
+          <p>若无掩码，模型会看到待预测的答案 &mdash; 生成退化为简单的复制操作。</p>
         </div>
         <div class="info-card" style="margin-top:14px;">
-          <h3>How it works</h3>
+          <h3>工作原理</h3>
           <ul class="info-list">
-            <li>Create upper-triangular matrix filled with <strong>&minus;&infin;</strong></li>
-            <li>Add mask to attention scores <strong>before</strong> softmax</li>
-            <li>After softmax: &minus;&infin; &rarr; <strong>0 weight</strong></li>
-            <li>Lower triangle = allowed attention (past + present)</li>
+            <li>创建上三角矩阵，填充 <strong>&minus;&infin;</strong></li>
+            <li>在 softmax <strong>之前</strong>将掩码加到 Attention 分数上</li>
+            <li>经过 softmax 后：&minus;&infin; &rarr; <strong>权重为 0</strong></li>
+            <li>下三角 = 允许关注的部分（过去 + 当前）</li>
           </ul>
         </div>
         <div class="training-note">
-          <p><strong>Bonus:</strong> The mask enables <strong>parallel training</strong> &mdash; all positions train simultaneously, unlike sequential RNN.</p>
+          <p><strong>额外收益：</strong>掩码使<strong>并行训练</strong>成为可能 &mdash; 所有位置同时训练，不同于 RNN 的逐步计算。</p>
         </div>
       </div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Causal mask = upper-triangular &minus;&infin; matrix &rarr; prevents future information leakage.</div>
+    <div class="takeaway"><span>要点：</span>Causal mask = 上三角 &minus;&infin; 矩阵 &rarr; 防止未来信息泄露。</div>
     <div class="footer">7 / 15</div>
   </div>
 </body>

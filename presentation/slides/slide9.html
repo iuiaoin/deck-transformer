@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -118,8 +118,8 @@
 </head>
 <body>
   <div class="slide">
-    <h1>Multi-Head Attention: Many Perspectives at Once</h1>
-    <p class="subtitle">Run h parallel attention "heads" &mdash; each captures different relationship patterns.</p>
+    <h1>Multi-Head Attention：多角度并行关注</h1>
+    <p class="subtitle">并行运行 h 个 Attention &ldquo;头&rdquo; &mdash; 每个头捕获不同的关系模式。</p>
     <div class="formula-bar">
       <div class="formula-text">
         <span class="accent">MultiHead</span>(Q, K, V) = Concat(<span class="mint">head<sub>1</sub></span>, &hellip;, <span class="mint">head<sub>h</sub></span>) &middot; W<sup>O</sup>
@@ -138,10 +138,10 @@
         <div class="concat-box">Concat &rarr; 512-dim</div>
         <div class="arrow-label">&darr; W<sup>O</sup></div>
         <div class="linear-box">Linear &rarr; 512-dim output</div>
-        <div class="dim-note">Input 512-dim &rarr; split into 8 &times; 64-dim &rarr; concat back &rarr; project to 512-dim</div>
+        <div class="dim-note">输入 512 维 &rarr; 拆分为 8 &times; 64 维 &rarr; 拼接回 &rarr; 投影为 512 维</div>
       </div>
       <div class="code-section">
-        <div class="code-label">Core Logic (reshape + compute + merge)</div>
+        <div class="code-label">核心逻辑（重塑 + 计算 + 合并）</div>
         <div class="code-block"><span class="cm"># Reshape: split into heads</span>
 <span class="cm"># (B, T, d_model) &rarr; (B, T, n_heads, head_dim) &rarr; (B, n_heads, T, head_dim)</span>
 xq = xq.<span class="fn">view</span>(bsz, seqlen, self.n_heads, self.head_dim)
@@ -159,11 +159,11 @@ output = self.wo(output)  <span class="cm"># Final linear projection</span></div
       </div>
     </div>
     <div class="why-strip">
-      <div class="why-card"><div class="why-title">Diverse patterns</div><div class="why-desc">Each head learns different relationships (syntax, semantics, proximity&hellip;)</div></div>
-      <div class="why-card"><div class="why-title">No extra cost</div><div class="why-desc">Same total FLOPs as single-head &mdash; just split the dimensions</div></div>
-      <div class="why-card"><div class="why-title">Better gradients</div><div class="why-desc">Multiple gradient paths improve training stability</div></div>
+      <div class="why-card"><div class="why-title">多样化模式</div><div class="why-desc">每个头学习不同的关系（句法、语义、邻近度......）</div></div>
+      <div class="why-card"><div class="why-title">无额外开销</div><div class="why-desc">总 FLOPs 与单头相同 &mdash; 只是拆分了维度</div></div>
+      <div class="why-card"><div class="why-title">更优梯度</div><div class="why-desc">多条梯度路径提升训练稳定性</div></div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Multi-head attention = parallel sub-attentions, each specializing in different patterns.</div>
+    <div class="takeaway"><span>要点：</span>Multi-Head Attention = 并行的子 Attention，各自专注于不同模式。</div>
     <div class="footer">9 / 15</div>
   </div>
 </body>

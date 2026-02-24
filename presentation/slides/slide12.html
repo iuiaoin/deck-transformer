@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Decoder</title>
+  <title>Decoder</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap');
@@ -121,18 +121,18 @@
 </head>
 <body>
   <div class="slide">
-    <h1>The Decoder: Three-Module Pipeline</h1>
-    <p class="subtitle">Masked Self-Attention &rarr; Cross-Attention &rarr; FFN, each wrapped in Add &amp; LayerNorm.</p>
+    <h1>Decoder：三模块流水线</h1>
+    <p class="subtitle">Masked Self-Attention &rarr; Cross-Attention &rarr; FFN，每个子层均包裹 Add &amp; LayerNorm。</p>
     <div class="content-area">
       <div class="diagram-col">
         <div class="dec-layer">
-          <div class="block-box block-input">Target (Embedding + PE)</div>
+          <div class="block-box block-input">目标序列（Embedding + PE）</div>
           <div class="arrow-down">&darr;</div>
           <div class="block-box block-ln">LayerNorm</div>
           <div class="arrow-down">&darr;</div>
           <div class="block-box block-masked" style="position:relative;">
             Masked Self-Attention
-            <div class="module-label ml-1" style="top:2px;">Module 1</div>
+            <div class="module-label ml-1" style="top:2px;">模块 1</div>
           </div>
           <div class="arrow-down">&darr;</div>
           <div class="block-add">+</div>
@@ -141,9 +141,9 @@
           <div class="arrow-down">&darr;</div>
           <div class="block-box block-cross" style="position:relative;">
             Cross-Attention
-            <div class="module-label ml-2" style="top:2px;">Module 2</div>
+            <div class="module-label ml-2" style="top:2px;">模块 2</div>
             <div class="enc-input-arrow" style="top:-7px;">
-              <div class="enc-input-box">Encoder<br/>Output</div>
+              <div class="enc-input-box">Encoder<br/>输出</div>
               <span class="enc-arrow">&rarr;</span>
             </div>
           </div>
@@ -154,46 +154,46 @@
           <div class="arrow-down">&darr;</div>
           <div class="block-box block-ffn" style="position:relative;">
             Feed-Forward Network
-            <div class="module-label ml-3" style="top:2px;">Module 3</div>
+            <div class="module-label ml-3" style="top:2px;">模块 3</div>
           </div>
           <div class="arrow-down">&darr;</div>
           <div class="block-add">+</div>
           <div class="arrow-down">&darr;</div>
-          <div class="block-box block-output">Decoder Output</div>
+          <div class="block-box block-output">Decoder 输出</div>
         </div>
-        <div class="times-label">&times; 6 layers</div>
+        <div class="times-label">&times; 6 层</div>
       </div>
       <div class="info-col">
         <div class="module-card">
           <div class="mod-num m1">1</div>
           <div class="mod-text">
             <h3>Masked Self-Attention</h3>
-            <p>Target sequence attends to itself with <strong>causal mask</strong> &mdash; each position sees only past tokens. Q = K = V = target.</p>
+            <p>目标序列通过 <strong>causal mask</strong> 进行自注意力——每个位置仅可见过去的 token。Q = K = V = 目标序列。</p>
           </div>
         </div>
         <div class="module-card">
           <div class="mod-num m2">2</div>
           <div class="mod-text">
             <h3>Cross-Attention</h3>
-            <p><strong>Q</strong> = decoder state, <strong>K &amp; V</strong> = encoder output (memory). This is how the decoder "reads" the source sequence.</p>
+            <p><strong>Q</strong> = Decoder 状态，<strong>K &amp; V</strong> = Encoder 输出（memory）。Decoder 以此方式「读取」源序列。</p>
           </div>
         </div>
         <div class="module-card">
           <div class="mod-num m3">3</div>
           <div class="mod-text">
             <h3>Feed-Forward Network</h3>
-            <p>Same position-wise FFN as encoder: 512 &rarr; 2048 &rarr; 512. Processes each position independently.</p>
+            <p>与 Encoder 相同的逐位置 FFN：512 &rarr; 2048 &rarr; 512。逐位置独立处理。</p>
           </div>
         </div>
         <div class="autoregressive-note">
-          <p><strong>Autoregressive generation:</strong> At inference, the decoder generates one token at a time, feeding each output back as the next input &mdash; until an end-of-sequence token appears.</p>
+          <p><strong>Autoregressive 生成：</strong>推理时，Decoder 逐个生成 token，将每次输出作为下一步输入——直至出现终止符。</p>
         </div>
         <div class="vs-encoder">
-          <strong>Encoder vs Decoder:</strong> Encoder has 2 sub-layers. Decoder has 3 (extra cross-attention to read the encoder).
+          <strong>Encoder vs Decoder：</strong>Encoder 有 2 个子层，Decoder 有 3 个（多出 Cross-Attention 以读取 Encoder）。
         </div>
       </div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Decoder = masked self-attention + cross-attention (reads encoder) + FFN.</div>
+    <div class="takeaway"><span>要点：</span>Decoder = Masked Self-Attention + Cross-Attention（读取 Encoder）+ FFN。</div>
     <div class="footer">12 / 15</div>
   </div>
 </body>

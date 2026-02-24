@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transformer's Legacy: Three Paradigms</title>
+  <title>Transformer 的传承：三大范式</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body {
@@ -93,13 +93,13 @@
 </head>
 <body>
   <div class="slide">
-    <h1>Transformer's Legacy: Three Paradigms</h1>
-    <p class="subtitle">Same Transformer DNA, three architectures &mdash; each optimized for different tasks.</p>
+    <h1>Transformer 的传承：三大范式</h1>
+    <p class="subtitle">同源 Transformer 基因，三种架构——各为不同任务而优化。</p>
     <div class="paradigms">
       <!-- Encoder-Only -->
       <div class="paradigm">
         <div class="p-header">
-          <div class="p-badge enc">Encoder-Only</div>
+          <div class="p-badge enc">仅 Encoder</div>
           <div class="p-name">BERT</div>
           <div class="p-model">Google, 2018 &middot; 110M&ndash;340M params</div>
         </div>
@@ -110,27 +110,27 @@
         <div class="p-props">
           <div class="prop-row">
             <div class="prop-label">Attention</div>
-            <div class="prop-value"><strong>Bidirectional</strong> self-attention &mdash; sees all context at once</div>
+            <div class="prop-value"><strong>双向</strong> Self-Attention —— 一次看到全部上下文</div>
           </div>
           <div class="prop-row">
-            <div class="prop-label">Training</div>
-            <div class="prop-value"><strong>MLM</strong> &mdash; Masked Language Model (fill in the blank)</div>
+            <div class="prop-label">训练方式</div>
+            <div class="prop-value"><strong>MLM</strong> —— 掩码语言模型（完形填空）</div>
           </div>
           <div class="prop-row">
-            <div class="prop-label">Strength</div>
-            <div class="prop-value"><strong>Understanding</strong> (NLU): classification, NER, QA</div>
+            <div class="prop-label">优势</div>
+            <div class="prop-value"><strong>理解</strong>（NLU）：分类、NER、QA</div>
           </div>
           <div class="prop-row">
-            <div class="prop-label">Scale</div>
+            <div class="prop-label">规模</div>
             <div class="prop-value">BERT-base 110M, BERT-large 340M</div>
           </div>
         </div>
-        <div class="p-insight">Sees full context &rarr; excels at understanding.</div>
+        <div class="p-insight">看到完整上下文 &rarr; 擅长理解任务。</div>
       </div>
       <!-- Decoder-Only -->
       <div class="paradigm">
         <div class="p-header">
-          <div class="p-badge dec">Decoder-Only</div>
+          <div class="p-badge dec">仅 Decoder</div>
           <div class="p-name">GPT</div>
           <div class="p-model">OpenAI, 2018&ndash;now &middot; 0.1B&ndash;175B+</div>
         </div>
@@ -141,22 +141,22 @@
         <div class="p-props">
           <div class="prop-row">
             <div class="prop-label">Attention</div>
-            <div class="prop-value"><strong>Causal</strong> (masked) self-attention &mdash; left-to-right only</div>
+            <div class="prop-value"><strong>因果</strong>（掩码）Self-Attention —— 仅从左到右</div>
           </div>
           <div class="prop-row">
-            <div class="prop-label">Training</div>
-            <div class="prop-value"><strong>CLM</strong> &mdash; Causal Language Model (predict next token)</div>
+            <div class="prop-label">训练方式</div>
+            <div class="prop-value"><strong>CLM</strong> —— 因果语言模型（预测下一个 token）</div>
           </div>
           <div class="prop-row">
-            <div class="prop-label">Strength</div>
-            <div class="prop-value"><strong>Generation</strong> (NLG): text, code, reasoning</div>
+            <div class="prop-label">优势</div>
+            <div class="prop-value"><strong>生成</strong>（NLG）：文本、代码、推理</div>
           </div>
           <div class="prop-row">
-            <div class="prop-label">Scale</div>
+            <div class="prop-label">规模</div>
             <div class="prop-value">GPT-1 0.1B &rarr; GPT-3 175B &rarr; GPT-4 ?T</div>
           </div>
         </div>
-        <div class="p-insight">Autoregressive &rarr; natural at generation. Scale = emergent abilities.</div>
+        <div class="p-insight">Autoregressive &rarr; 天然擅长生成。规模化 = 涌现能力。</div>
       </div>
       <!-- Encoder-Decoder -->
       <div class="paradigm">
@@ -172,25 +172,25 @@
         <div class="p-props">
           <div class="prop-row">
             <div class="prop-label">Attention</div>
-            <div class="prop-value"><strong>Self + Cross + Masked</strong> &mdash; full original design</div>
+            <div class="prop-value"><strong>Self + Cross + Masked</strong> —— 完整的原始设计</div>
           </div>
           <div class="prop-row">
-            <div class="prop-label">Training</div>
-            <div class="prop-value"><strong>Text-to-text</strong> MLM &mdash; all tasks as text in/out</div>
+            <div class="prop-label">训练方式</div>
+            <div class="prop-value"><strong>Text-to-text</strong> MLM —— 所有任务统一为文本输入/输出</div>
           </div>
           <div class="prop-row">
-            <div class="prop-label">Strength</div>
-            <div class="prop-value"><strong>Both</strong> (Seq2Seq): translation, summarization</div>
+            <div class="prop-label">优势</div>
+            <div class="prop-value"><strong>兼具</strong>（Seq2Seq）：翻译、摘要</div>
           </div>
           <div class="prop-row">
-            <div class="prop-label">Scale</div>
+            <div class="prop-label">规模</div>
             <div class="prop-value">T5-small 60M &rarr; T5-11B</div>
           </div>
         </div>
-        <div class="p-insight">Unified text-to-text format &rarr; one model, all tasks.</div>
+        <div class="p-insight">统一的 text-to-text 格式 &rarr; 一个模型，胜任所有任务。</div>
       </div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Same Transformer DNA, three architectures &mdash; BERT for understanding, GPT for generation, T5 for both.</div>
+    <div class="takeaway"><span>要点：</span>同源 Transformer 基因，三种架构——BERT 擅理解，GPT 擅生成，T5 兼而有之。</div>
     <div class="footer">14 / 15</div>
   </div>
 </body>

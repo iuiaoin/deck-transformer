@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -110,23 +110,23 @@
 </head>
 <body>
   <div class="slide">
-    <h1>Positional Encoding: Teaching Order to the Transformer</h1>
-    <p class="subtitle">Attention is position-agnostic &mdash; sin/cos positional encoding injects sequence order.</p>
+    <h1>Positional Encoding：为 Transformer 注入顺序信息</h1>
+    <p class="subtitle">Attention 对位置无感知 &mdash; sin/cos Positional Encoding 注入序列顺序。</p>
     <div class="content-area">
       <div class="left-col">
         <div class="problem-box">
-          <h3>The problem</h3>
-          <p>Without position info, attention treats all token positions equally.</p>
-          <div class="example">"I love you" = "you love I" &nbsp;&larr; same attention!</div>
+          <h3>问题所在</h3>
+          <p>若无位置信息，Attention 对所有 token 位置一视同仁。</p>
+          <div class="example">"I love you" = "you love I" &nbsp;&larr; 相同的 Attention！</div>
         </div>
         <div class="formula-card">
           <div class="formula-row">
             <div class="formula-item">
-              <span class="dim-label">Even dimensions</span>
+              <span class="dim-label">偶数维度</span>
               PE(pos, 2i) = <span class="accent">sin</span>(pos / 10000<sup>2i/d</sup>)
             </div>
             <div class="formula-item">
-              <span class="dim-label">Odd dimensions</span>
+              <span class="dim-label">奇数维度</span>
               PE(pos, 2i+1) = <span class="accent">cos</span>(pos / 10000<sup>2i/d</sup>)
             </div>
           </div>
@@ -134,21 +134,21 @@
         <div class="principles">
           <div class="principle">
             <div class="principle-num">1</div>
-            <div class="principle-text"><strong>Deterministic:</strong> Same position always gets the same encoding, regardless of sequence length</div>
+            <div class="principle-text"><strong>确定性：</strong>相同位置始终获得相同编码，与序列长度无关</div>
           </div>
           <div class="principle">
             <div class="principle-num">2</div>
-            <div class="principle-text"><strong>Relative distance:</strong> PE(pos+k) is a linear combination of PE(pos) &mdash; relative positions are preserved</div>
+            <div class="principle-text"><strong>相对距离：</strong>PE(pos+k) 是 PE(pos) 的线性组合 &mdash; 相对位置关系得以保留</div>
           </div>
           <div class="principle">
             <div class="principle-num">3</div>
-            <div class="principle-text"><strong>Generalizes:</strong> Works for sequences longer than any seen during training</div>
+            <div class="principle-text"><strong>泛化能力：</strong>可处理比训练时更长的序列</div>
           </div>
         </div>
       </div>
       <div class="right-col">
         <div class="heatmap-section">
-          <div class="heatmap-title">PE Heatmap (position &times; dimension)</div>
+          <div class="heatmap-title">PE 热力图（位置 &times; 维度）</div>
           <svg viewBox="0 0 320 180" width="100%" style="border-radius:8px;">
             <!-- Generate a simplified positional encoding heatmap -->
             <defs>
@@ -184,18 +184,18 @@
             <text x="160" y="-4" text-anchor="middle" fill="#9E9086" font-size="10" font-family="Inter" font-weight="600">Dimension &rarr;</text>
           </svg>
           <div class="heatmap-labels">
-            <span>&larr; Low frequency (slow change)</span>
-            <span>High frequency (fast change) &rarr;</span>
+            <span>&larr; 低频（变化缓慢）</span>
+            <span>高频（变化迅速） &rarr;</span>
           </div>
-          <div style="font-size:11px; color:#9E9086; margin-top:2px;">Rows = positions (0&ndash;14) &middot; Columns = encoding dimensions &middot; Colors = sin/cos values</div>
+          <div style="font-size:11px; color:#9E9086; margin-top:2px;">行 = 位置（0&ndash;14） &middot; 列 = 编码维度 &middot; 颜色 = sin/cos 值</div>
         </div>
         <div class="residual-note">
-          <p><strong>Residual connections</strong> (adding input directly to sublayer output) preserve PE through all layers:</p>
-          <p><span class="formula-inline">x<sub>N</sub> = x<sub>0</sub> + &Sigma; F<sub>i</sub>(x<sub>i-1</sub>)</span> &mdash; initial position info x<sub>0</sub> survives through N layers.</p>
+          <p><strong>Residual 连接</strong>（将输入直接加到子层输出上）使 PE 在所有层中得以保留：</p>
+          <p><span class="formula-inline">x<sub>N</sub> = x<sub>0</sub> + &Sigma; F<sub>i</sub>(x<sub>i-1</sub>)</span> &mdash; 初始位置信息 x<sub>0</sub> 在 N 层传播中始终存在。</p>
         </div>
       </div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Sin/cos positional encoding &mdash; deterministic, captures relative position, generalizes to any length.</div>
+    <div class="takeaway"><span>要点：</span>Sin/cos Positional Encoding &mdash; 确定性编码，捕获相对位置，可泛化至任意长度。</div>
     <div class="footer">10 / 15</div>
   </div>
 </body>

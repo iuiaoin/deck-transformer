@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attention = Weighted Dictionary Lookup</title>
+  <title>Attention = 加权字典查找</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap');
@@ -104,13 +104,13 @@
 </head>
 <body>
   <div class="slide">
-    <h1>Attention = Weighted Dictionary Lookup</h1>
-    <p class="subtitle">Given a Query, compute similarity to each Key, return a weighted sum of Values.</p>
+    <h1>Attention = 加权字典查找</h1>
+    <p class="subtitle">给定 Query，计算其与每个 Key 的相似度，返回 Value 的加权求和。</p>
     <div class="panels">
       <!-- Hard Lookup -->
       <div class="panel">
-        <div class="panel-tag hard">Hard Lookup</div>
-        <div class="panel-title">Exact match</div>
+        <div class="panel-tag hard">精确查找</div>
+        <div class="panel-title">精确匹配</div>
         <div class="dict-visual">
           <div class="query-box">
             <span class="query-label">Query:</span> "apple"
@@ -119,7 +119,7 @@
             <div class="dict-key" style="border-color:#E07A59; background:rgba(224,122,89,0.06);">apple</div>
             <div class="dict-arrow">&rarr;</div>
             <div class="dict-val">10</div>
-            <div class="match-arrow">&larr; match!</div>
+            <div class="match-arrow">&larr; 命中！</div>
           </div>
           <div class="dict-row">
             <div class="dict-key">banana</div>
@@ -136,8 +136,8 @@
       </div>
       <!-- Soft Lookup (Attention) -->
       <div class="panel">
-        <div class="panel-tag soft">Soft Lookup = Attention</div>
-        <div class="panel-title">Similarity-weighted</div>
+        <div class="panel-tag soft">软查找 = Attention</div>
+        <div class="panel-title">相似度加权</div>
         <div class="dict-visual">
           <div class="query-box">
             <span class="query-label">Query:</span> "fruit"
@@ -167,8 +167,8 @@
         </div>
       </div>
     </div>
-    <p class="jargon"><strong>Softmax</strong> &mdash; a function that converts raw similarity scores into probabilities summing to 1.</p>
-    <div class="takeaway"><span>Takeaway:</span> Attention is soft dictionary lookup &mdash; similarity-weighted retrieval of values.</div>
+    <p class="jargon"><strong>Softmax</strong> &mdash; 将原始相似度分数转换为总和为 1 的概率分布的函数。</p>
+    <div class="takeaway"><span>要点：</span>Attention 即软字典查找——基于相似度加权检索值。</div>
     <div class="footer">4 / 15</div>
   </div>
 </body>

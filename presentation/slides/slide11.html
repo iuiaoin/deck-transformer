@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Encoder</title>
+  <title>Encoder</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap');
@@ -102,12 +102,12 @@
 </head>
 <body>
   <div class="slide">
-    <h1>The Encoder: Self-Attention + FFN + Residual</h1>
-    <p class="subtitle">Each Encoder layer: two sub-layers, each with Add &amp; LayerNorm. Stack N = 6 layers.</p>
+    <h1>Encoder：Self-Attention + FFN + Residual</h1>
+    <p class="subtitle">每个 Encoder 层包含两个子层，各配有 Add &amp; LayerNorm。共堆叠 N = 6 层。</p>
     <div class="content-area">
       <div class="diagram-col">
         <div class="enc-layer">
-          <div class="block-box block-input">Input (Embedding + PE)</div>
+          <div class="block-box block-input">输入（Embedding + PE）</div>
           <div class="arrow-down">&darr;</div>
           <div class="block-box block-ln">LayerNorm</div>
           <div class="arrow-down">&darr;</div>
@@ -129,45 +129,45 @@
           <div class="arrow-down">&darr;</div>
           <div class="block-add">+</div>
           <div class="arrow-down">&darr;</div>
-          <div class="block-box block-output">Encoder Output</div>
+          <div class="block-box block-output">Encoder 输出</div>
         </div>
-        <div class="times-label">&times; 6 layers</div>
+        <div class="times-label">&times; 6 层</div>
       </div>
       <div class="info-col">
         <div class="component-card">
           <div class="comp-icon attn">SA</div>
           <div class="comp-text">
             <h3>Multi-Head Self-Attention</h3>
-            <p>Captures relationships <strong>between positions</strong>. Each token attends to all others in the sequence.</p>
+            <p>捕捉<strong>位置间的关系</strong>。每个 token 关注序列中所有其他 token。</p>
           </div>
         </div>
         <div class="component-card">
           <div class="comp-icon ffn">FF</div>
           <div class="comp-text">
             <h3>Feed-Forward Network (FFN)</h3>
-            <p>Two linear layers: 512 &rarr; 2048 &rarr; 512. Processes each position <strong>independently</strong> &mdash; fuses feature dimensions.</p>
-            <span class="jargon">Like a 1&times;1 convolution &mdash; same parameters for every position (parameter sharing).</span>
+            <p>两层线性变换：512 &rarr; 2048 &rarr; 512。逐位置<strong>独立</strong>处理——融合特征维度。</p>
+            <span class="jargon">类似 1&times;1 卷积——所有位置共享参数。</span>
           </div>
         </div>
         <div class="component-card">
           <div class="comp-icon ln">LN</div>
           <div class="comp-text">
             <h3>LayerNorm</h3>
-            <p>Normalizes activations <strong>within each sample</strong> to stabilize training across deep layers.</p>
-            <span class="jargon">LayerNorm &mdash; normalizes each sample's feature vector to zero mean, unit variance.</span>
+            <p>对<strong>每个样本内部</strong>的激活值进行归一化，以稳定深层网络的训练。</p>
+            <span class="jargon">LayerNorm —— 将每个样本的特征向量归一化为零均值、单位方差。</span>
           </div>
         </div>
         <div class="component-card">
           <div class="comp-icon res">+</div>
           <div class="comp-text">
-            <h3>Residual Connection</h3>
+            <h3>残差连接</h3>
             <p><code style="font-family:'Source Code Pro';font-size:13px;color:#E07A59;">out = x + SubLayer(LayerNorm(x))</code></p>
-            <p>Lets the bottom-layer signal (including PE) flow directly to the top &mdash; prevents gradient vanishing.</p>
+            <p>让底层信号（包括 PE）直接传递到顶层——防止梯度消失。</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Encoder layer = attention (between positions) + FFN (within positions) + residual shortcuts.</div>
+    <div class="takeaway"><span>要点：</span>Encoder 层 = Attention（位置间）+ FFN（位置内）+ 残差捷径。</div>
     <div class="footer">11 / 15</div>
   </div>
 </body>

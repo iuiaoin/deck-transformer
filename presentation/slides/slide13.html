@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -133,15 +133,15 @@
 </head>
 <body>
   <div class="slide">
-    <h1>Full Transformer: Wiring It All Together</h1>
-    <p class="subtitle">Source &rarr; Encoder &times;N &rarr; memory &rarr; Decoder &times;N &rarr; Linear &rarr; Softmax &rarr; output.</p>
+    <h1>完整 Transformer：将所有组件串联</h1>
+    <p class="subtitle">源序列 &rarr; Encoder &times;N &rarr; memory &rarr; Decoder &times;N &rarr; Linear &rarr; Softmax &rarr; 输出。</p>
     <div class="content-area">
       <div class="arch-col">
         <div class="arch-diagram">
           <!-- Encoder Tower -->
           <div class="tower">
             <div class="tower-label enc-l">Encoder</div>
-            <div class="t-block t-emb">Input Embedding</div>
+            <div class="t-block t-emb">输入 Embedding</div>
             <div class="t-block t-pe">+ Positional Encoding</div>
             <div class="t-arrow">&darr;</div>
             <div class="t-layer-group">
@@ -150,10 +150,10 @@
               <div class="t-block t-norm">Add &amp; Norm</div>
               <div class="t-block t-ff">Feed-Forward</div>
               <div class="t-block t-norm">Add &amp; Norm</div>
-              <div class="t-layer-label">&times; N layers</div>
+              <div class="t-layer-label">&times; N 层</div>
             </div>
             <div class="t-arrow">&darr;</div>
-            <div class="t-block t-emb" style="font-size:10px;">Encoder Output (memory)</div>
+            <div class="t-block t-emb" style="font-size:10px;">Encoder 输出（memory）</div>
           </div>
           <!-- Arrow between -->
           <div style="display:flex;flex-direction:column;justify-content:center;gap:4px;padding-bottom:60px;">
@@ -162,7 +162,7 @@
           <!-- Decoder Tower -->
           <div class="tower">
             <div class="tower-label dec-l">Decoder</div>
-            <div class="t-block t-emb">Output Embedding</div>
+            <div class="t-block t-emb">输出 Embedding</div>
             <div class="t-block t-pe">+ Positional Encoding</div>
             <div class="t-arrow">&darr;</div>
             <div class="t-layer-group">
@@ -173,7 +173,7 @@
               <div class="t-block t-norm">Add &amp; Norm</div>
               <div class="t-block t-ff">Feed-Forward</div>
               <div class="t-block t-norm">Add &amp; Norm</div>
-              <div class="t-layer-label">&times; N layers</div>
+              <div class="t-layer-label">&times; N 层</div>
             </div>
             <div class="t-arrow">&darr;</div>
             <div class="t-block t-linear">Linear</div>
@@ -193,13 +193,13 @@
 )</div>
         </div>
         <div class="classes-grid">
-          <div class="class-chip"><div class="class-name">TransformerEncoderLayer</div><div class="class-desc">Single encoder layer</div></div>
-          <div class="class-chip"><div class="class-name">TransformerEncoder</div><div class="class-desc">Stacks N layers</div></div>
-          <div class="class-chip"><div class="class-name">TransformerDecoderLayer</div><div class="class-desc">Single decoder layer</div></div>
-          <div class="class-chip"><div class="class-name">TransformerDecoder</div><div class="class-desc">Stacks N layers</div></div>
+          <div class="class-chip"><div class="class-name">TransformerEncoderLayer</div><div class="class-desc">单个 Encoder 层</div></div>
+          <div class="class-chip"><div class="class-name">TransformerEncoder</div><div class="class-desc">堆叠 N 层</div></div>
+          <div class="class-chip"><div class="class-name">TransformerDecoderLayer</div><div class="class-desc">单个 Decoder 层</div></div>
+          <div class="class-chip"><div class="class-name">TransformerDecoder</div><div class="class-desc">堆叠 N 层</div></div>
         </div>
         <div class="api-card">
-          <div class="api-title">Forward Pass</div>
+          <div class="api-title">前向传播</div>
           <div class="api-code"><span class="cm"># Encoder: source &rarr; memory</span>
 memory = model.<span class="fn">encoder</span>(src, src_padding_mask)
 
@@ -209,16 +209,16 @@ output = model.<span class="fn">decoder</span>(tgt, memory, tgt_mask)</div>
         <div class="masks-row">
           <div class="mask-card">
             <h4>src_padding_mask</h4>
-            <p>Masks padding tokens in variable-length source sequences</p>
+            <p>掩盖变长源序列中的填充 token</p>
           </div>
           <div class="mask-card">
             <h4>tgt_mask</h4>
-            <p>Causal upper-triangular mask for autoregressive decoding</p>
+            <p>用于 Autoregressive 解码的因果上三角掩码</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> 4 classes, 5 key hyperparameters &mdash; that's the entire Transformer in PyTorch.</div>
+    <div class="takeaway"><span>要点：</span>4 个类、5 个关键超参数——这就是 PyTorch 中完整的 Transformer。</div>
     <div class="footer">13 / 15</div>
   </div>
 </body>

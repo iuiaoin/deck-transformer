@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -132,8 +132,8 @@
 </head>
 <body>
   <div class="slide">
-    <h1>Cross-Attention: Bridging Two Sequences</h1>
-    <p class="subtitle">Q comes from the decoder, K and V come from the encoder &mdash; the decoder "reads" the encoder's understanding.</p>
+    <h1>Cross-Attention：连接两个序列</h1>
+    <p class="subtitle">Q 来自 Decoder，K 和 V 来自 Encoder &mdash; Decoder「读取」Encoder 的理解。</p>
     <div class="content-area">
       <div class="diagram-col">
         <div class="cross-diagram">
@@ -155,12 +155,12 @@
             <line x1="280" y1="285" x2="280" y2="350" class="arr-dark" marker-end="url(#ah)"/>
           </svg>
           <div class="stream-box encoder-stream">
-            Encoder Output
+            Encoder 输出
             <div class="stream-label">(memory)</div>
           </div>
           <div class="stream-box decoder-stream">
-            Decoder State
-            <div class="stream-label">(masked self-attn output)</div>
+            Decoder 状态
+            <div class="stream-label">(Masked Self-Attention 输出)</div>
           </div>
           <div class="qkv-row kv">
             <div class="qkv-box qkv-k">K</div>
@@ -170,25 +170,25 @@
             <div class="qkv-box qkv-q">Q</div>
           </div>
           <div class="attn-block">Cross-Attention</div>
-          <div class="output-block">Encoder-informed representation</div>
+          <div class="output-block">融合 Encoder 信息的表示</div>
         </div>
       </div>
       <div class="info-col">
         <table class="compare-table">
           <thead><tr><th></th><th><span class="tag-self">Self-Attention</span></th><th><span class="tag-cross">Cross-Attention</span></th></tr></thead>
           <tbody>
-            <tr><td>Q source</td><td>Same sequence</td><td>Decoder</td></tr>
-            <tr><td>K, V source</td><td>Same sequence</td><td>Encoder (memory)</td></tr>
-            <tr><td>Purpose</td><td>Internal relationships</td><td>Read source info</td></tr>
+            <tr><td>Q 来源</td><td>同一序列</td><td>Decoder</td></tr>
+            <tr><td>K、V 来源</td><td>同一序列</td><td>Encoder (memory)</td></tr>
+            <tr><td>用途</td><td>内部关系</td><td>读取源序列信息</td></tr>
           </tbody>
         </table>
         <div class="analogy-box">
-          <p><strong>Analogy:</strong> The decoder asks questions (Q) and the encoder's rich representation provides the answers (K + V).</p>
-          <p style="margin-top:8px;">In machine translation: encoder understands the source language, decoder queries it while generating the target language.</p>
+          <p><strong>类比：</strong>Decoder 负责提问（Q），Encoder 丰富的表示负责作答（K + V）。</p>
+          <p style="margin-top:8px;">在机器翻译中：Encoder 理解源语言，Decoder 在生成目标语言时不断查询 Encoder。</p>
         </div>
       </div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Cross-attention &mdash; the decoder queries the encoder's memory. Q from decoder, K+V from encoder.</div>
+    <div class="takeaway"><span>要点：</span>Cross-Attention &mdash; Decoder 查询 Encoder 的记忆。Q 来自 Decoder，K+V 来自 Encoder。</div>
     <div class="footer">8 / 15</div>
   </div>
 </body>

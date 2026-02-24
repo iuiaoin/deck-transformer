@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Why Attention? The Sequential Bottleneck</title>
+  <title>为什么需要 Attention？序列化瓶颈</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body {
@@ -114,15 +114,15 @@
 </head>
 <body>
   <div class="slide">
-    <h1>Why Attention? The Sequential Bottleneck</h1>
-    <p class="subtitle">RNN processes tokens one-by-one. Attention processes all tokens at once.</p>
+    <h1>为什么需要 Attention？序列化瓶颈</h1>
+    <p class="subtitle">RNN 逐个处理 token，Attention 一次处理所有 token。</p>
     <div class="comparison">
       <div class="panel">
         <div class="panel-header">
           <div class="panel-icon rnn">R</div>
           <div>
             <div class="panel-title">RNN</div>
-            <div class="panel-label">Recurrent Neural Network &mdash; processes sequences step-by-step</div>
+            <div class="panel-label">循环神经网络 &mdash; 逐步处理序列</div>
           </div>
         </div>
         <div class="diagram-area">
@@ -138,13 +138,13 @@
               <div class="rnn-arrow" style="opacity:0.3">&rarr;</div>
               <div class="rnn-node faded">x<sub>5</sub></div>
             </div>
-            <div class="signal-label">Signal fades over distance &rarr;</div>
+            <div class="signal-label">信号随距离衰减 &rarr;</div>
           </div>
         </div>
         <ul class="bullet-list">
-          <li>Sequential &rarr; no GPU parallelism</li>
-          <li>Long-range dependencies decay</li>
-          <li>Token 1 struggles to reach token 100</li>
+          <li>顺序执行 &rarr; 无法利用 GPU 并行</li>
+          <li>长距离依赖衰减</li>
+          <li>Token 1 难以影响 token 100</li>
         </ul>
       </div>
       <div class="panel">
@@ -152,7 +152,7 @@
           <div class="panel-icon attn">A</div>
           <div>
             <div class="panel-title">Attention</div>
-            <div class="panel-label">All-pair computation &mdash; every token connects to every token</div>
+            <div class="panel-label">全配对计算 &mdash; 每个 token 与每个 token 相连</div>
           </div>
         </div>
         <div class="diagram-area">
@@ -182,13 +182,13 @@
           </svg>
         </div>
         <ul class="bullet-list">
-          <li>Parallel &rarr; full GPU utilization</li>
-          <li>O(1) path between any two tokens</li>
-          <li>All relationships computed in one step</li>
+          <li>并行 &rarr; 充分利用 GPU</li>
+          <li>任意两个 token 之间 O(1) 路径长度</li>
+          <li>一步计算所有关系</li>
         </ul>
       </div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Attention replaces sequential processing with parallel all-pair computation.</div>
+    <div class="takeaway"><span>要点：</span>Attention 以并行的全配对计算取代顺序处理。</div>
     <div class="footer">3 / 15</div>
   </div>
 </body>

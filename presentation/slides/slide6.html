@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -123,13 +123,13 @@
 </head>
 <body>
   <div class="slide">
-    <h1>Self-Attention: Q = K = V from Same Source</h1>
-    <p class="subtitle">Each token learns its relationship to every other token in the same sequence.</p>
+    <h1>Self-Attention：Q、K、V 来自同一输入</h1>
+    <p class="subtitle">每个 token 学习自身与同序列中所有其他 token 的关系。</p>
     <div class="content-area">
       <div class="diagram-col">
         <div class="flow-diagram">
           <div class="input-box">
-            Input Sequence X
+            输入序列 X
             <div class="label">"The cat sat on the mat"</div>
           </div>
           <div class="split-arrows">
@@ -145,10 +145,10 @@
           <div class="arrow-down">&darr;</div>
           <div class="attn-block">Scaled Dot-Product Attention</div>
           <div class="arrow-down">&darr;</div>
-          <div class="output-box">Context-aware output</div>
+          <div class="output-box">融合上下文的输出</div>
         </div>
         <div class="heatmap-section">
-          <div class="heatmap-title">Example: Attention weights for "cat"</div>
+          <div class="heatmap-title">示例：&ldquo;cat&rdquo; 的 Attention 权重</div>
           <div class="heatmap">
             <div></div>
             <div class="header">The</div><div class="header">cat</div><div class="header">sat</div><div class="header">on</div><div class="header">mat</div>
@@ -163,22 +163,22 @@
       </div>
       <div class="info-col">
         <div class="info-card">
-          <h3>How it works</h3>
+          <h3>工作原理</h3>
           <ul class="info-list">
-            <li>Same input X passes through <strong>3 separate</strong> linear projections &rarr; Q, K, V</li>
-            <li>Same source, <strong>different learned</strong> transformations</li>
-            <li>Each token attends to all others (including itself)</li>
-            <li>"bank" near "river" gets different attention than "bank" near "money"</li>
+            <li>同一输入 X 通过 <strong>3 个独立的</strong>线性投影 &rarr; Q、K、V</li>
+            <li>相同的来源，<strong>不同的可学习</strong>变换</li>
+            <li>每个 token 关注所有其他 token（包括自身）</li>
+            <li>&ldquo;bank&rdquo; 靠近 &ldquo;river&rdquo; 时获得的 Attention 与靠近 &ldquo;money&rdquo; 时截然不同</li>
           </ul>
         </div>
         <div class="info-card">
-          <h3>In code</h3>
+          <h3>代码表示</h3>
           <div class="code-inline">attention(x, x, x)</div>
-          <p class="jargon" style="margin-top:8px;"><strong>Embedding</strong> &mdash; a dense vector representing a word; similar words have similar vectors.</p>
+          <p class="jargon" style="margin-top:8px;"><strong>Embedding</strong> &mdash; 表示词语的稠密向量；语义相近的词拥有相似的向量。</p>
         </div>
       </div>
     </div>
-    <div class="takeaway"><span>Takeaway:</span> Self-attention &mdash; every token queries every other token in the same sequence.</div>
+    <div class="takeaway"><span>要点：</span>Self-Attention &mdash; 每个 token 查询同一序列中的所有其他 token。</div>
     <div class="footer">6 / 15</div>
   </div>
 </body>
