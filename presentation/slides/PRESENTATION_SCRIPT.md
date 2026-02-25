@@ -2,9 +2,9 @@
 
 ## Slide 1 — 封面
 
-大家好，欢迎来到今天的分享。今天我们要聊的主题是 Transformer——它是目前几乎所有大语言模型（比如 ChatGPT、Claude）背后的核心架构。
+好， 我们开始吧。今天我们要聊的主题是 Transformer——它是目前几乎所有大语言模型（比如 ChatGPT、Claude）背后的核心架构。
 
-听到"Transformer"这个名字，可能有些同学会觉得很高深。但别担心，今天我们的目标就是把它讲得通俗易懂。我不会假设大家有很深的数学或机器学习基础，我会尽量用类比和直觉来帮助大家理解。
+听到"Transformer"这个名字，可能有些同学会觉得有点高深。但别担心，今天我们的目标就是把它讲得通俗易懂。不会假设大家有很深的数学或机器学习基础，我会尽量用类比和直觉来帮助大家理解。
 
 这篇分享的灵感来自 2017 年 Google 发表的一篇论文，叫做 "Attention Is All You Need"——翻译过来就是"你只需要注意力机制"。听起来很霸气对吧？我们今天就来看看，这个"注意力机制"到底是什么，为什么它这么重要。
 
@@ -42,7 +42,7 @@
 
 ## Slide 4 — 字典查找
 
-好，现在我们来理解 Attention 的核心直觉。别看后面有公式，其本质其实非常简单——就是一种"查字典"。
+好，现在我们来建立 Attention 的核心直觉。别看后面有公式，其本质其实不复杂——就是一种"查字典"。
 
 大家看 slide 左边，这是我们平时用的**精确查找**：你查"苹果"这个词，字典里有"苹果"这个条目，就直接把对应的值（10）返回给你。找到了就是找到了，找不到就是找不到，非黑即白。
 
@@ -61,7 +61,7 @@
 
 ## Slide 5 — Scaled Dot-Product Attention
 
-理解了"软查找"的直觉之后，我们来看看它的数学表达。别紧张，其实就是把刚才的过程写成了公式。
+理解了"软查找"的直觉之后，我们来看看它的数学表达。大家不要紧张，其实就是把刚才的过程写成了公式。
 
 大家看 slide 上的公式，我们拆成四步来看：
 
@@ -73,7 +73,7 @@
 
 **第四步：加权求和。** 用这些概率作为权重，对值（Value，简称 V）做加权求和，得到最终结果。
 
-大家看 slide 下面的 PyTorch 代码——整个计算只需要三行代码！第一行算分数并缩放，第二行做 softmax，第三行做加权求和。就这么简单。
+大家看 slide 下面的 PyTorch 代码——整个计算只需要三行代码！第一行算分数并缩放，第二行做 softmax，第三行做加权求和。
 
 ---
 
@@ -130,7 +130,7 @@ slide 右边有一个对比表格，大家可以看到 Self-Attention 和 Cross-
 - Self-Attention：Q、K、V 全部来自同一个序列
 - Cross-Attention：Q 来自 Decoder，K 和 V 来自 Encoder
 
-简单记忆：**Decoder 负责提问（Q），Encoder 负责回答（K 和 V）**。
+简单理解：**Decoder 负责提问（Q），Encoder 负责回答（K 和 V）**。
 
 ---
 
@@ -153,7 +153,7 @@ slide 右边列出了三个关键优势：
 - **不增加计算量**：因为是把维度拆分的，总计算量跟单头 Attention 完全一样
 - **训练更稳定**：多条梯度路径，训练效果更好
 
-看 slide 上的代码片段——核心操作就是"拆分 → 各自计算 → 拼接回来"，逻辑其实很清晰。
+看 slide 上的代码片段——核心操作就是"拆分 → 各自计算 → 拼接回来"，逻辑是比较清晰的。
 
 ---
 
@@ -182,7 +182,7 @@ slide 右边列出了三个关键优势：
 
 ## Slide 11 — Encoder
 
-好，学完了所有核心零件，现在我们开始组装！首先来看 Encoder（编码器）。
+好，学完了所有核心component，现在我们开始组装！首先来看 Encoder（编码器）。
 
 大家可以把 Encoder 想象成一条**流水线**。每一层 Encoder 就是流水线上的一个工位，数据经过每个工位都会被加工一次。
 
@@ -208,11 +208,11 @@ Decoder 的结构跟 Encoder 很像，但**多了一个模块**。大家看 slid
 
 **模块一：Masked Self-Attention。** 跟 Encoder 里的 Self-Attention 类似，但加了掩码——只能看到前面已经生成的词，不能偷看后面的。我们在 Slide 7 已经讲过这个机制了。
 
-**模块二：Cross-Attention。** 这是 Decoder 独有的！大家看 slide 上从 Encoder 输出引过来的箭头——这就是 Decoder "回头查看" Encoder 理解的信息。我们在 Slide 8 讲过，Q 来自 Decoder，K 和 V 来自 Encoder。
+**模块二：Cross-Attention。** 这是 Decoder 独有的！大家看 slide 上从 Encoder 输出引过来——这就是 Decoder "回头查看" Encoder 理解的信息。我们在 Slide 8 讲过，Q 来自 Decoder，K 和 V 来自 Encoder。
 
 **模块三：Feed-Forward Network（FFN）。** 跟 Encoder 一样的逐位置处理。
 
-简单记忆 Encoder 和 Decoder 的区别：
+简单理解 Encoder 和 Decoder 的区别：
 - Encoder 有 **2 个子层**：Self-Attention + FFN
 - Decoder 有 **3 个子层**：Masked Self-Attention + Cross-Attention + FFN
 
@@ -222,23 +222,25 @@ slide 右边还提到一个重要概念：**自回归生成（Autoregressive）*
 
 ## Slide 13 — 完整的 Transformer
 
-现在我们终于可以把所有零件拼在一起了！大家看 slide 上的完整架构图。
+现在我们终于可以把所有component拼在一起了！大家看 slide 上的完整架构图。
 
-让我们跟着数据的流动走一遍：
+让我们跟着data flow走一遍：
 
-**左边是 Encoder 塔：**
+**左边是 Encoder flow：**
 1. 源语言句子（比如中文）先经过 **Embedding**——把每个词转换成一个数字向量（你可以理解为给每个词一个数字化的"身份证"）
 2. 加上 **Positional Encoding**——给每个词标注位置信息
 3. 然后通过 **N 层 Encoder**（每层包含 Self-Attention + FFN）
 4. 最终输出一个叫做 **"memory"** 的结果——这是 Encoder 对整句话的理解
 
-**右边是 Decoder 塔：**
+**右边是 Decoder flow：**
 1. 目标语言句子（比如英文）同样经过 Embedding 和 Positional Encoding
 2. 然后通过 **N 层 Decoder**（每层包含 Masked Self-Attention + Cross-Attention + FFN）
 3. 其中 Cross-Attention 会接收来自 Encoder 的 memory
 4. 最后通过一个 **Linear 层**（线性层）和 **Softmax**，输出每个可能的下一个词的概率
 
-slide 右边展示了 PyTorch 的实现代码——整个 Transformer 只需要 4 个类和 5 个超参数就能定义：模型维度 512、8 个注意力头、6 层 Encoder、6 层 Decoder、FFN 隐藏层维度 2048。是不是没有想象中那么复杂？
+slide 右边展示了 PyTorch 的实现代码——整个 Transformer 用 4 个类和 5 个超参数就能定义：模型维度 512、8 个注意力头、6 层 Encoder、6 层 Decoder、FFN 隐藏层维度 2048。
+
+**Transformer Explainer**
 
 ---
 
@@ -257,7 +259,7 @@ Transformer 发明之后，研究者们发现：不一定要同时使用 Encoder
 - 因为它能看到完整的上下文，所以特别擅长"理解"一段话在说什么
 
 **第二种：GPT（只用 Decoder）**
-- 由 OpenAI 提出，从 2018 年的 GPT-1 到后来的 GPT-3、GPT-4
+- 由 OpenAI 提出，从 2018 年的 GPT-1 到后来的 GPT-3、GPT-4、GPT-5
 - 只保留了 Decoder 部分，去掉了 Encoder
 - 特点是**单向注意力**——只能从左到右看，就是我们之前讲的 Masked Self-Attention
 - 训练方式叫 CLM（预测下一个词）——给前面几个词，预测下一个词是什么
@@ -270,13 +272,13 @@ Transformer 发明之后，研究者们发现：不一定要同时使用 Encoder
 - 把所有任务都统一成了"文本输入→文本输出"的格式
 - 擅长**翻译、摘要**等需要"读懂输入再生成输出"的任务
 
-一个有趣的趋势是：当今最火的大语言模型（GPT-4、Claude、LLaMA 等）几乎都采用了 Decoder-only（只用 Decoder）的架构，然后通过**增大模型规模**来获得越来越强的能力。
+一个有趣的趋势是：当今最火的大语言模型（ChatGPT、Claude、LLaMA 等）几乎都采用了 Decoder-only（只用 Decoder）的架构，然后通过**增大模型规模**来获得越来越强的能力。
 
 ---
 
 ## Slide 15 — 核心要点与问答
 
-好的，让我们用四句大白话来总结今天的内容：
+好的，让我们用四句话来总结今天的内容：
 
 1. **Attention 就是"智能查字典"**——根据相似度从多个来源中加权提取信息，取代了以前那种排队式的逐个处理方式。
 
@@ -286,4 +288,4 @@ Transformer 发明之后，研究者们发现：不一定要同时使用 Encoder
 
 4. **BERT、GPT、T5 都是同一套积木的不同搭法**——根据任务需要，选择使用 Encoder、Decoder 或两者兼用。
 
-以上就是今天的全部内容。感谢大家的聆听！现在进入问答环节，大家有任何问题都可以提出来，不管多基础的问题都没关系。
+以上就是今天 Transformer 分享的全部内容。感谢大家的聆听！
