@@ -32,7 +32,7 @@
       letter-spacing: -0.5px; animation: fadeInContent 0.6s ease-out;
     }
     .subtitle {
-      font-size: 15px; color: #E07A59; font-weight: 600; margin: 0 0 16px;
+      font-size: 15px; color: #E07A59; font-weight: 600; margin: 0 0 0px;
       animation: fadeInContent 0.6s ease-out 0.1s forwards; opacity: 0;
     }
     .content-area {
@@ -91,6 +91,7 @@
     .api-code {
       font-family: 'Source Code Pro', monospace; font-size: 13px;
       line-height: 1.6; color: #E8E4DF;
+      white-space: pre;
     }
     .api-code .fn { color: #E07A59; }
     .api-code .cm { color: #7A7067; }
@@ -202,7 +203,6 @@
           <div class="api-title">Forward Pass</div>
           <div class="api-code"><span class="cm"># Encoder: source &rarr; memory</span>
 memory = model.<span class="fn">encoder</span>(src, src_padding_mask)
-
 <span class="cm"># Decoder: target + memory &rarr; output</span>
 output = model.<span class="fn">decoder</span>(tgt, memory, tgt_mask)</div>
         </div>
