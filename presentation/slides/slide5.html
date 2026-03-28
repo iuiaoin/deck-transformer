@@ -85,13 +85,14 @@
       background: #2B2A27; border-radius: 10px; padding: 16px 22px;
       font-family: 'Source Code Pro', monospace; font-size: 14px;
       line-height: 1.65; color: #E8E4DF; overflow: hidden;
+      white-space: pre;
     }
     .code-block .kw { color: #9FD3B8; }
     .code-block .fn { color: #E07A59; }
     .code-block .cm { color: #7A7067; }
     .code-block .op { color: #C4A882; }
     .takeaway {
-      margin-top: auto; padding-top: 12px; border-top: 1px solid #EAE0D9;
+      margin-top: 30px; padding-top: 12px; border-top: 1px solid #EAE0D9;
       font-size: 15px; color: #2B2A27; font-weight: 600; line-height: 1.5;
       animation: fadeInContent 0.6s ease-out 0.6s forwards; opacity: 0;
     }
@@ -142,9 +143,9 @@
     </div>
     <div class="code-section">
       <div class="code-label">Implementation (3 lines)</div>
-      <div class="code-block">scores = torch.<span class="fn">matmul</span>(query, key.<span class="fn">transpose</span>(<span class="op">-2</span>, <span class="op">-1</span>)) / math.<span class="fn">sqrt</span>(d_k)  <span class="cm"># Step 1+2</span>
+      <div class="code-block">scores = torch.<span class="fn">matmul</span>(query, key.<span class="fn">transpose</span>(<span class="op">-2</span>, <span class="op">-1</span>)) / math.<span class="fn">sqrt</span>(d_k)  <span class="cm" style="margin-left: 8px"># Step 1+2</span>
 weights = scores.<span class="fn">softmax</span>(dim=<span class="op">-1</span>)                                       <span class="cm"># Step 3</span>
-output  = torch.<span class="fn">matmul</span>(weights, value)                                      <span class="cm"># Step 4</span></div>
+output  = torch.<span class="fn">matmul</span>(weights, value)                                      <span class="cm" style="margin-left: -42px"># Step 4</span></div>
     </div>
     <div class="takeaway"><span>Takeaway:</span> Dot-product + scale + softmax + weighted sum &mdash; the entire attention computation in 3 lines.</div>
     <div class="footer">5 / 15</div>
