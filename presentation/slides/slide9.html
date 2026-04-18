@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cross-Attention</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 56px 80px 80px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+h1 { font-size: 42px; font-weight: 700; color: #2B2A27; margin: 0 0 14px; letter-spacing: -0.8px; }
+.takeaway { font-size: 18px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 980px; margin: 0 0 28px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.content { display: grid; grid-template-columns: 1.1fr 1fr; gap: 44px; height: 460px; align-items: stretch; }
+.diagram-wrap { opacity: 0; animation: fadeInContent 0.8s 0.15s ease-out forwards; position: relative; background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 12px; padding: 24px; }
+.diagram-wrap h3 { font-size: 13px; color: #5D4E42; margin: 0 0 18px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+.diagram { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; position: relative; }
+.stream { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.stream .lbl { font-size: 11px; font-weight: 700; color: #9E9086; letter-spacing: 1.5px; text-transform: uppercase; }
+.stream .box { padding: 12px 18px; border-radius: 8px; font-weight: 700; font-size: 14px; min-width: 130px; text-align: center; font-family: 'Source Code Pro', monospace; }
+.enc-box { background: rgba(159,211,184,0.35); color: #2B2A27; border: 1.5px solid #9FD3B8; }
+.dec-box { background: rgba(224,122,89,0.15); color: #2B2A27; border: 1.5px solid #E07A59; }
+.ca-box { background: #2B2A27; color: #F7F4EF; border: 1.5px solid #2B2A27; position: relative; }
+.ca-box::after { content: 'cross-attention'; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 9px; color: #E07A59; background: #F7F4EF; padding: 2px 8px; border-radius: 4px; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; font-family: 'Inter', sans-serif; border: 1px solid #EAE0D9; }
+.token-row { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; font-size: 11px; }
+.tk { padding: 2px 6px; border-radius: 4px; background: rgba(43,42,39,0.08); color: #2B2A27; font-family: 'Source Code Pro', monospace; font-weight: 600; }
+.flow-arrow { margin: 8px 0; color: #9E9086; font-size: 16px; font-family: 'Source Code Pro', monospace; }
+.mem-arrow { position: absolute; top: 108px; left: 50%; transform: translateX(-50%); width: 120px; display: flex; flex-direction: column; align-items: center; }
+.mem-arrow .line { height: 2px; width: 100%; background: #9FD3B8; position: relative; }
+.mem-arrow .line::after { content: ''; position: absolute; right: -2px; top: -5px; border: 6px solid transparent; border-left-color: #9FD3B8; }
+.mem-arrow .lab { font-size: 11px; color: #4A3F35; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Source Code Pro', monospace; }
+.mem-arrow .lab span { color: #E07A59; }
+.right-col { opacity: 0; animation: fadeInContent 0.8s 0.3s ease-out forwards; display: flex; flex-direction: column; gap: 18px; }
+.right-col h3 { font-size: 13px; color: #5D4E42; margin: 0 0 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+.contrast { border-collapse: collapse; width: 100%; font-size: 14px; background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; overflow: hidden; }
+.contrast th { background: #2B2A27; color: #F7F4EF; padding: 12px 14px; text-align: left; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; }
+.contrast td { padding: 14px; color: #5D4E42; border-top: 1px solid #EAE0D9; font-size: 13px; line-height: 1.5; }
+.contrast td:first-child { font-weight: 700; color: #2B2A27; }
+.contrast .q-from { color: #E07A59; font-weight: 700; font-family: 'Source Code Pro', monospace; }
+.contrast .kv-from { color: #4A3F35; font-weight: 700; font-family: 'Source Code Pro', monospace; }
+.usecase { background: rgba(159,211,184,0.2); border-left: 3px solid #9FD3B8; padding: 12px 16px; font-size: 13px; color: #4A3F35; line-height: 1.55; border-radius: 0 8px 8px 0; }
+.usecase strong { color: #2B2A27; font-weight: 700; }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 1 · Attention from scratch</div>
+  <h1>Cross-Attention — the bridge between two sequences</h1>
+  <div class="takeaway">In cross-attention, <strong>Q comes from the decoder</strong>, and <strong>K, V come from the encoder output</strong> (called <em>memory</em>). This is how the decoder reads what the encoder understood.</div>
+  <div class="content">
+    <div class="diagram-wrap">
+      <h3>Data flow across the two stacks</h3>
+      <div class="diagram">
+        <div class="stream">
+          <div class="lbl">Encoder side</div>
+          <div class="token-row"><span class="tk">Today</span><span class="tk">is</span><span class="tk">good</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="box enc-box">Encoder stack</div>
+          <div class="flow-arrow">↓</div>
+          <div class="box enc-box">memory</div>
+        </div>
+        <div class="stream">
+          <div class="lbl">Decoder side</div>
+          <div class="token-row"><span class="tk">Aujourd'hui</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="box dec-box">Masked Self-Attn</div>
+          <div class="flow-arrow">↓</div>
+          <div class="box ca-box">Q · K · V</div>
+        </div>
+        <div class="mem-arrow"><div class="lab"><span>K, V</span> from memory</div><div class="line"></div></div>
+      </div>
+    </div>
+    <div class="right-col">
+      <h3>Self vs. cross attention</h3>
+      <table class="contrast">
+        <thead><tr><th>Mechanism</th><th>Q from</th><th>K, V from</th></tr></thead>
+        <tbody>
+          <tr><td>Self-attention</td><td><span class="q-from">same sequence</span></td><td><span class="kv-from">same sequence</span></td></tr>
+          <tr><td>Cross-attention</td><td><span class="q-from">decoder</span></td><td><span class="kv-from">encoder memory</span></td></tr>
+        </tbody>
+      </table>
+      <div class="usecase"><strong>Translation example:</strong> the French decoder asks questions ("what should come next?") and looks them up in the English encoder's representation of the source sentence.</div>
+      <div class="usecase" style="background: rgba(224,122,89,0.08); border-color: #E07A59;"><strong>Same code, different inputs:</strong> <code style="font-family:'Source Code Pro',monospace; font-size:12px; color:#E07A59;">attention(dec_h, enc_mem, enc_mem)</code> — just swap the q/k/v arguments.</div>
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>09 / 16</div></div>
+</div>
+</body>
+</html>

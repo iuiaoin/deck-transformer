@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Multi-Head Attention</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&family=Noto+Serif:ital@1&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 52px 70px 76px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px; }
+h1 { font-size: 40px; font-weight: 700; color: #2B2A27; margin: 0 0 12px; letter-spacing: -0.8px; }
+.takeaway { font-size: 17px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 1100px; margin: 0 0 18px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.top-row { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-bottom: 16px; align-items: start; }
+.formula-box { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; padding: 14px 18px; font-family: 'Noto Serif', 'Times New Roman', serif; font-size: 16px; color: #2B2A27; line-height: 1.7; opacity: 0; animation: fadeInContent 0.7s 0.15s ease-out forwards; }
+.formula-box .fn { font-family: 'Inter', sans-serif; font-weight: 600; color: #5D4E42; font-size: 15px; font-style: normal; }
+.formula-box .hd { color: #E07A59; font-weight: 700; }
+.formula-box .w { color: #9FD3B8; font-weight: 700; }
+.heads-viz { opacity: 0; animation: fadeInContent 0.7s 0.25s ease-out forwards; }
+.heads-viz .label { font-size: 11px; color: #9E9086; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px; font-weight: 700; }
+.heads-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 8px; }
+.head { width: 42px; height: 32px; background: rgba(224,122,89,0.2); border: 1.5px solid #E07A59; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-family: 'Source Code Pro', monospace; font-size: 11px; color: #E07A59; font-weight: 700; }
+.concat-row { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: #5D4E42; margin-bottom: 6px; }
+.concat-bar { height: 16px; background: linear-gradient(90deg, #E07A59 0%, #E07A59 100%); border-radius: 3px; width: 380px; opacity: 0.35; display: flex; align-items: center; justify-content: center; color: #2B2A27; font-weight: 700; font-size: 11px; font-family: 'Source Code Pro', monospace; }
+.wo-box { margin-top: 8px; background: #2B2A27; color: #F7F4EF; padding: 6px 14px; border-radius: 5px; font-family: 'Source Code Pro', monospace; font-size: 12px; text-align: center; width: 80px; margin-left: auto; margin-right: auto; font-weight: 700; }
+.bottom-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: stretch; }
+.code-block { background: #2B2A27; color: #F7F4EF; border-radius: 10px; padding: 16px 20px; font-family: 'Source Code Pro', monospace; font-size: 13px; line-height: 1.6; opacity: 0; animation: fadeInContent 0.8s 0.3s ease-out forwards; }
+.code-block .kw { color: #E07A59; }
+.code-block .fn { color: #9FD3B8; }
+.code-block .c { color: #8E7F72; font-style: italic; }
+.code-block .n { color: #DFB8A2; }
+.side-card { display: flex; flex-direction: column; gap: 12px; opacity: 0; animation: fadeInContent 0.8s 0.4s ease-out forwards; }
+.side-card .card { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; padding: 12px 16px; font-size: 12px; color: #5D4E42; line-height: 1.5; }
+.side-card .card h4 { margin: 0 0 4px; color: #2B2A27; font-size: 13px; font-weight: 700; }
+.side-card .card strong { color: #E07A59; font-family: 'Source Code Pro', monospace; font-weight: 700; }
+.side-card .card.mint { background: rgba(159,211,184,0.18); border-color: #9FD3B8; }
+.footer { position: absolute; bottom: 24px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 1 · Attention from scratch</div>
+  <h1>Multi-Head Attention — many perspectives at once</h1>
+  <div class="takeaway">Run attention <code style="font-family:'Source Code Pro',monospace;">h</code> times in parallel with <strong>different projections</strong>; each head learns a different kind of relationship (syntax, coreference, long-range binding). Concatenate → project.</div>
+  <div class="top-row">
+    <div class="formula-box">
+      <span class="fn">MultiHead</span>(Q,K,V) = <span class="fn">Concat</span>(<span class="hd">head<sub>1</sub></span>, …, <span class="hd">head<sub>h</sub></span>) <span class="w">W<sup>O</sup></span><br/>
+      &nbsp;&nbsp;<span class="hd">head<sub>i</sub></span> = <span class="fn">Attention</span>(Q<span class="w">W<sup>Q</sup><sub>i</sub></span>, K<span class="w">W<sup>K</sup><sub>i</sub></span>, V<span class="w">W<sup>V</sup><sub>i</sub></span>)
+    </div>
+    <div class="heads-viz">
+      <div class="label">h = 8 heads · d_model = 512 · d_k = 64</div>
+      <div class="heads-row">
+        <div class="head">h₁</div><div class="head">h₂</div><div class="head">h₃</div><div class="head">h₄</div>
+        <div class="head">h₅</div><div class="head">h₆</div><div class="head">h₇</div><div class="head">h₈</div>
+      </div>
+      <div class="concat-row">↓ concat along feature dim ↓</div>
+      <div style="display:flex; justify-content:center;"><div class="concat-bar">8 × 64 = 512</div></div>
+      <div class="wo-box">W<sup>O</sup></div>
+    </div>
+  </div>
+  <div class="bottom-row">
+    <div class="code-block"><span class="c"># split : (B, T, d) → (B, h, T, d/h)</span>
+xq = self.<span class="fn">wq</span>(q).<span class="fn">view</span>(B, T, h, d_k).<span class="fn">transpose</span>(<span class="n">1</span>, <span class="n">2</span>)
+xk = self.<span class="fn">wk</span>(k).<span class="fn">view</span>(B, T, h, d_k).<span class="fn">transpose</span>(<span class="n">1</span>, <span class="n">2</span>)
+xv = self.<span class="fn">wv</span>(v).<span class="fn">view</span>(B, T, h, d_k).<span class="fn">transpose</span>(<span class="n">1</span>, <span class="n">2</span>)
+
+out = <span class="fn">attention</span>(xq, xk, xv, mask)    <span class="c"># per-head</span>
+
+<span class="c"># merge : (B, h, T, d/h) → (B, T, d)</span>
+out = out.<span class="fn">transpose</span>(<span class="n">1</span>, <span class="n">2</span>).<span class="fn">contiguous</span>().<span class="fn">view</span>(B, T, d)
+<span class="kw">return</span> self.<span class="fn">wo</span>(out)</div>
+    <div class="side-card">
+      <div class="card">
+        <h4>One matmul, many heads</h4>
+        Instead of <em>h</em> separate weight matrices, PyTorch fuses them into one big <strong>W<sub>Q</sub>/W<sub>K</sub>/W<sub>V</sub></strong> and reshapes — same math, much faster.
+      </div>
+      <div class="card mint">
+        <h4>What each head learns</h4>
+        Probing studies show heads specialize: some attend to adjacent tokens, some track subject-verb agreement, some follow coreference chains.
+      </div>
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>10 / 16</div></div>
+</div>
+</body>
+</html>

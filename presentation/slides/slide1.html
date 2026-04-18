@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cover — Understanding Transformer Architecture</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInShape { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Source Code Pro', monospace; font-size: 380px; font-weight: 500; color: rgba(224, 122, 89, 0.06); letter-spacing: -10px; z-index: 1; user-select: none; }
+.slide-content { z-index: 2; padding: 40px; opacity: 0; animation: fadeInContent 1.2s ease-out forwards; }
+.eyebrow { font-size: 16px; font-weight: 600; color: #E07A59; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 32px; }
+h1 { font-size: 68px; font-weight: 700; color: #2B2A27; margin: 0 0 22px; letter-spacing: -1.5px; line-height: 1.05; }
+.underline { width: 80px; height: 4px; background: #E07A59; margin: 0 auto 28px; border-radius: 2px; }
+p.tagline { font-size: 22px; color: #5D4E42; margin: 0 auto; max-width: 760px; line-height: 1.55; font-weight: 400; }
+.accent-shape { position: absolute; border-radius: 50%; opacity: 0; animation: fadeInShape 2s ease-out forwards; z-index: 0; }
+.shape1 { width: 340px; height: 340px; background: radial-gradient(circle, rgba(224,122,89,0.14) 0%, transparent 70%); top: -120px; left: -110px; }
+.shape2 { width: 440px; height: 440px; background: radial-gradient(circle, rgba(159,211,184,0.12) 0%, transparent 70%); bottom: -160px; right: -150px; }
+.footer { position: absolute; bottom: 40px; left: 60px; right: 60px; display: flex; justify-content: space-between; align-items: center; z-index: 3; font-size: 14px; color: #5D4E42; opacity: 0; animation: fadeInContent 1.2s 0.4s ease-out forwards; }
+.footer .left { font-weight: 600; color: #2B2A27; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="accent-shape shape1"></div>
+  <div class="accent-shape shape2"></div>
+  <div class="watermark">Q·K·V</div>
+  <div class="slide-content">
+    <div class="eyebrow">Technical Sharing Session</div>
+    <h1>Understanding<br/>Transformer Architecture</h1>
+    <div class="underline"></div>
+    <p class="tagline"><em>Attention Is All You Need</em> — from dictionary lookup,<br/>to self-attention, to BERT and GPT.</p>
+  </div>
+  <div class="footer">
+    <div class="left">Transformer · Attention Is All You Need</div>
+    <div>2026</div>
+  </div>
+</div>
+</body>
+</html>

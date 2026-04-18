@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Encoder-Decoder Stack</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 52px 70px 76px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px; }
+h1 { font-size: 40px; font-weight: 700; color: #2B2A27; margin: 0 0 12px; letter-spacing: -0.8px; }
+.takeaway { font-size: 17px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 1100px; margin: 0 0 24px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.diagram { display: grid; grid-template-columns: 1fr 140px 1fr; gap: 22px; align-items: stretch; height: 500px; opacity: 0; animation: fadeInContent 0.8s 0.15s ease-out forwards; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.col-header { text-align: center; font-weight: 700; font-size: 15px; color: #2B2A27; padding-bottom: 8px; border-bottom: 2px solid; margin-bottom: 4px; }
+.col.enc .col-header { border-color: #9FD3B8; }
+.col.dec .col-header { border-color: #E07A59; }
+.col-header .cnt { color: #9E9086; font-weight: 500; font-size: 12px; font-family: 'Source Code Pro', monospace; margin-left: 6px; }
+.block { background: #FBF8F5; border: 1.5px solid #EAE0D9; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #2B2A27; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+.block .pill { font-family: 'Source Code Pro', monospace; font-size: 10px; color: #F7F4EF; background: #9FD3B8; padding: 2px 6px; border-radius: 3px; font-weight: 700; letter-spacing: 0.5px; }
+.col.dec .block .pill.c1 { background: #E07A59; }
+.col.dec .block .pill.c2 { background: #2B2A27; }
+.col.dec .block .pill.c3 { background: #9FD3B8; }
+.block.emb { background: rgba(159,211,184,0.15); border-color: #9FD3B8; }
+.col.dec .block.emb { background: rgba(224,122,89,0.1); border-color: #E07A59; }
+.block.top { background: rgba(224,122,89,0.15); border-color: #E07A59; font-weight: 700; }
+.block.output { background: #2B2A27; color: #F7F4EF; border-color: #2B2A27; font-family: 'Source Code Pro', monospace; font-weight: 600; text-align: center; justify-content: center; font-size: 12px; }
+.stack-badge { background: #FBF8F5; border: 1px dashed #9FD3B8; border-radius: 10px; padding: 10px; text-align: center; font-size: 11px; color: #5D4E42; line-height: 1.5; }
+.col.dec .stack-badge { border-color: #E07A59; }
+.stack-badge strong { color: #2B2A27; font-weight: 700; display: block; font-size: 13px; margin-bottom: 2px; }
+.bridge { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 40px 0; }
+.bridge .mem-box { background: #2B2A27; color: #F7F4EF; padding: 12px 16px; border-radius: 8px; font-family: 'Source Code Pro', monospace; font-size: 13px; font-weight: 700; text-align: center; margin-bottom: 12px; }
+.bridge .arrow { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bridge .arrow .line { height: 2px; width: 100%; background: #E07A59; position: relative; }
+.bridge .arrow .line::after { content: ''; position: absolute; right: -1px; top: -5px; border: 6px solid transparent; border-left-color: #E07A59; }
+.bridge .caption { font-size: 10px; font-family: 'Source Code Pro', monospace; color: #E07A59; font-weight: 700; letter-spacing: 0.5px; text-align: center; line-height: 1.4; }
+.arrow-down { text-align: center; color: #9E9086; font-size: 12px; margin: -2px 0; font-family: 'Source Code Pro', monospace; }
+.footer { position: absolute; bottom: 24px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 2 · Putting it together</div>
+  <h1>The full picture — Encoder-Decoder stack</h1>
+  <div class="takeaway">Stack <strong>N = 6</strong> of each block type. Every decoder layer queries the encoder output via <strong>cross-attention</strong>. Top of the stack → Linear → Softmax → next-token probabilities.</div>
+  <div class="diagram">
+    <div class="col enc">
+      <div class="col-header">Encoder<span class="cnt">× N = 6</span></div>
+      <div class="block emb">Source embedding + PE</div>
+      <div class="arrow-down">↓</div>
+      <div class="stack-badge">
+        <strong>Encoder Layer (×6)</strong>
+        per layer: self-attn → Add&amp;Norm → FFN → Add&amp;Norm
+      </div>
+      <div class="block"><span class="pill">1</span>Self-Attention</div>
+      <div class="block"><span class="pill">2</span>Add &amp; Norm</div>
+      <div class="block"><span class="pill">3</span>Feed-Forward</div>
+      <div class="block"><span class="pill">4</span>Add &amp; Norm</div>
+      <div class="arrow-down">↓</div>
+      <div class="block top">memory (top of encoder)</div>
+    </div>
+    <div class="bridge">
+      <div class="mem-box">memory<br/><span style="color:#9FD3B8; font-size:10px; font-weight:500;">shared K, V</span></div>
+      <div class="arrow">
+        <div class="caption">K, V<br/>to every<br/>decoder layer</div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <div class="col dec">
+      <div class="col-header">Decoder<span class="cnt">× N = 6</span></div>
+      <div class="block emb">Target embedding + PE</div>
+      <div class="arrow-down">↓</div>
+      <div class="stack-badge">
+        <strong>Decoder Layer (×6)</strong>
+        masked self-attn → cross-attn(memory) → FFN
+      </div>
+      <div class="block"><span class="pill c1">1</span>Masked Self-Attention</div>
+      <div class="block"><span class="pill c1">2</span>Add &amp; Norm</div>
+      <div class="block"><span class="pill c2">3</span>Cross-Attention ← memory</div>
+      <div class="block"><span class="pill c2">4</span>Add &amp; Norm</div>
+      <div class="block"><span class="pill c3">5</span>Feed-Forward + Add&amp;Norm</div>
+      <div class="arrow-down">↓</div>
+      <div class="block output">Linear → Softmax → p(next token)</div>
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>13 / 16</div></div>
+</div>
+</body>
+</html>

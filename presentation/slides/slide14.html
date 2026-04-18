@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PyTorch nn.Transformer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 52px 70px 76px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px; }
+h1 { font-size: 40px; font-weight: 700; color: #2B2A27; margin: 0 0 12px; letter-spacing: -0.8px; }
+.takeaway { font-size: 17px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 1140px; margin: 0 0 20px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.content { display: grid; grid-template-columns: 1.25fr 1fr; gap: 30px; height: 470px; }
+.code-block { background: #2B2A27; color: #F7F4EF; border-radius: 10px; padding: 22px 24px; font-family: 'Source Code Pro', monospace; font-size: 14px; line-height: 1.7; opacity: 0; animation: fadeInContent 0.8s 0.15s ease-out forwards; overflow: hidden; }
+.code-block .kw { color: #E07A59; }
+.code-block .fn { color: #9FD3B8; }
+.code-block .arg { color: #DFB8A2; }
+.code-block .c { color: #8E7F72; font-style: italic; }
+.code-block .n { color: #DFB8A2; }
+.code-block .mask { background: rgba(224,122,89,0.18); padding: 0 3px; border-radius: 2px; }
+.right-col { display: flex; flex-direction: column; gap: 14px; opacity: 0; animation: fadeInContent 0.8s 0.3s ease-out forwards; }
+.right-col h3 { font-size: 12px; color: #9E9086; margin: 0 0 2px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+.mask-table { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; overflow: hidden; font-size: 12px; }
+.mask-row { display: grid; grid-template-columns: 1.2fr 1fr 1.4fr; padding: 10px 12px; border-bottom: 1px solid #EAE0D9; gap: 10px; align-items: start; }
+.mask-row:last-child { border-bottom: none; }
+.mask-row.hdr { background: #2B2A27; color: #F7F4EF; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; padding: 8px 12px; }
+.mask-row .name { font-family: 'Source Code Pro', monospace; font-weight: 700; color: #E07A59; font-size: 11px; word-break: break-all; }
+.mask-row .shape { font-family: 'Source Code Pro', monospace; color: #4A3F35; font-size: 11px; font-weight: 600; }
+.mask-row .purpose { color: #5D4E42; font-size: 11px; line-height: 1.5; }
+.mask-row.hdr .name, .mask-row.hdr .shape, .mask-row.hdr .purpose { color: #F7F4EF; font-weight: 600; font-size: 10px; }
+.caption { background: rgba(159,211,184,0.18); border-left: 3px solid #9FD3B8; padding: 11px 16px; font-size: 12px; color: #4A3F35; line-height: 1.55; border-radius: 0 8px 8px 0; }
+.caption strong { color: #2B2A27; font-weight: 700; }
+.caption em { color: #E07A59; font-style: normal; font-weight: 700; }
+.footer { position: absolute; bottom: 24px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 2 · Putting it together</div>
+  <h1>Wiring it up with <span style="font-family:'Source Code Pro',monospace; color:#E07A59;">torch.nn.Transformer</span></h1>
+  <div class="takeaway">PyTorch ships the whole architecture as one class. <strong>The tricky part is getting the masks right.</strong></div>
+  <div class="content">
+    <div class="code-block"><span class="c"># instantiate the full encoder-decoder model</span>
+model = nn.<span class="fn">Transformer</span>(
+    d_model=<span class="n">512</span>,
+    nhead=<span class="n">8</span>,
+    num_encoder_layers=<span class="n">6</span>,
+    num_decoder_layers=<span class="n">6</span>,
+    dim_feedforward=<span class="n">2048</span>,
+)
+
+<span class="c"># forward pass — masks are the interesting part</span>
+out = <span class="fn">model</span>(
+    src, tgt,
+    <span class="mask">src_key_padding_mask=src_pad</span>,      <span class="c"># hide &lt;pad&gt; in encoder</span>
+    <span class="mask">tgt_mask=causal_mask</span>,               <span class="c"># no peeking at future</span>
+    <span class="mask">memory_key_padding_mask=src_pad</span>,   <span class="c"># hide &lt;pad&gt; in cross-attn</span>
+)
+
+<span class="c"># at inference: decoder is autoregressive</span>
+<span class="kw">for</span> step <span class="kw">in</span> <span class="fn">range</span>(max_len):
+    logits = <span class="fn">model</span>(src, tgt_so_far, ...)
+    tgt_so_far = <span class="fn">append</span>(tgt_so_far, <span class="fn">argmax</span>(logits[-<span class="n">1</span>]))</div>
+    <div class="right-col">
+      <h3>Three masks, three jobs</h3>
+      <div class="mask-table">
+        <div class="mask-row hdr"><div class="name">mask</div><div class="shape">shape</div><div class="purpose">purpose</div></div>
+        <div class="mask-row"><div class="name">src_key_<br/>padding_mask</div><div class="shape">(B, S)</div><div class="purpose">Hide <code>&lt;pad&gt;</code> tokens in the encoder — variable-length batches.</div></div>
+        <div class="mask-row"><div class="name">tgt_mask<br/>(causal)</div><div class="shape">(T, T)<br/>upper triangular</div><div class="purpose">Prevent the decoder from looking at future target tokens.</div></div>
+        <div class="mask-row"><div class="name">memory_key_<br/>padding_mask</div><div class="shape">(B, S)</div><div class="purpose">Hide <code>&lt;pad&gt;</code> in cross-attention — same padding, different role.</div></div>
+      </div>
+      <div class="caption"><strong>Training:</strong> whole target sequence in parallel thanks to the causal mask. &nbsp;<em>Inference:</em> still autoregressive — one token at a time, fed back in.</div>
+      <div class="caption" style="background: rgba(224,122,89,0.08); border-color: #E07A59;"><strong>Pro tip:</strong> mask shape mistakes are the #1 source of quietly-wrong Transformer bugs. Always print shapes.</div>
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>14 / 16</div></div>
+</div>
+</body>
+</html>

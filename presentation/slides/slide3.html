@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Attention Intuition — Dictionary</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 60px 90px 80px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px; }
+h1 { font-size: 44px; font-weight: 700; color: #2B2A27; margin: 0 0 16px; letter-spacing: -0.8px; }
+.takeaway { font-size: 19px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 980px; margin: 0 0 38px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.columns { display: grid; grid-template-columns: 1fr 80px 1fr; gap: 24px; align-items: stretch; }
+.panel { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 12px; padding: 24px; opacity: 0; animation: fadeInContent 0.7s ease-out forwards; }
+.panel:nth-child(1) { animation-delay: 0.15s; }
+.panel:nth-child(3) { animation-delay: 0.45s; }
+.panel h3 { font-size: 17px; color: #2B2A27; margin: 0 0 4px; font-weight: 700; }
+.panel .label { font-size: 12px; color: #9E9086; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; font-weight: 600; }
+.dict { font-family: 'Source Code Pro', monospace; font-size: 16px; background: #2B2A27; color: #F7F4EF; padding: 16px 18px; border-radius: 8px; line-height: 1.6; margin-bottom: 14px; }
+.dict .k { color: #9FD3B8; }
+.dict .v { color: #E07A59; }
+.dict .punc { color: #9E9086; }
+.query-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 14px; color: #5D4E42; }
+.query-row .chip { font-family: 'Source Code Pro', monospace; background: rgba(224,122,89,0.14); color: #E07A59; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 13px; }
+.result { font-family: 'Source Code Pro', monospace; font-size: 14px; color: #2B2A27; background: rgba(159,211,184,0.2); padding: 10px 14px; border-radius: 8px; border-left: 3px solid #9FD3B8; margin-top: 10px; }
+.weights-table { font-family: 'Source Code Pro', monospace; font-size: 13px; background: #2B2A27; color: #F7F4EF; padding: 14px 18px; border-radius: 8px; line-height: 1.65; margin-bottom: 10px; }
+.weights-table .w { color: #E07A59; font-weight: 600; }
+.arrow-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.arrow-col .arrow { font-family: 'Source Code Pro', monospace; color: #E07A59; font-size: 26px; font-weight: 700; }
+.arrow-col .arrow-label { font-size: 11px; color: #5D4E42; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; text-align: center; line-height: 1.4; }
+.gloss { margin-top: 26px; font-size: 13px; color: #5D4E42; border: 1px dashed #C9B9AC; border-radius: 8px; padding: 10px 16px; background: rgba(251,248,245,0.6); max-width: 720px; }
+.gloss strong { color: #E07A59; font-weight: 700; }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 1 · Attention from scratch</div>
+  <h1>Start with something familiar — a dictionary</h1>
+  <div class="takeaway">Attention generalizes dictionary lookup from <strong>exact match</strong> to <strong>weighted match</strong>.</div>
+  <div class="columns">
+    <div class="panel">
+      <h3>Hard lookup</h3>
+      <div class="label">exact string match</div>
+      <div class="dict">{<br/>&nbsp;&nbsp;<span class="k">"apple"</span><span class="punc">:</span> <span class="v">10</span><span class="punc">,</span><br/>&nbsp;&nbsp;<span class="k">"banana"</span><span class="punc">:</span> <span class="v">5</span><span class="punc">,</span><br/>&nbsp;&nbsp;<span class="k">"chair"</span><span class="punc">:</span> <span class="v">2</span><br/>}</div>
+      <div class="query-row">Query: <span class="chip">"apple"</span> → match one key</div>
+      <div class="result">value = <strong>10</strong></div>
+    </div>
+    <div class="arrow-col">
+      <div class="arrow">⟶</div>
+      <div class="arrow-label">exact<br/>→ soft</div>
+    </div>
+    <div class="panel">
+      <h3>Soft lookup (attention)</h3>
+      <div class="label">weighted similarity</div>
+      <div class="weights-table">
+        "apple"&nbsp;&nbsp;→ w = <span class="w">0.6</span><br/>
+        "banana" → w = <span class="w">0.4</span><br/>
+        "chair"&nbsp;&nbsp;→ w = <span class="w">0.0</span>
+      </div>
+      <div class="query-row">Query: <span class="chip">"fruit"</span> → no exact key</div>
+      <div class="result">value = 0.6·10 + 0.4·5 + 0·2 = <strong>8</strong></div>
+    </div>
+  </div>
+  <div class="gloss"><strong>jargon:</strong> a <em>weight</em> tells us how much each key contributes; the weights always sum to 1.</div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>03 / 16</div></div>
+</div>
+</body>
+</html>

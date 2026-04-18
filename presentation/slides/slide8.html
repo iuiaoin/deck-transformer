@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Masked Self-Attention</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 56px 80px 80px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+h1 { font-size: 42px; font-weight: 700; color: #2B2A27; margin: 0 0 14px; letter-spacing: -0.8px; }
+.takeaway { font-size: 18px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 980px; margin: 0 0 26px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.content { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; height: 460px; }
+.left-col { opacity: 0; animation: fadeInContent 0.7s 0.15s ease-out forwards; }
+.left-col h3 { font-size: 14px; color: #5D4E42; margin: 0 0 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+.steps { font-family: 'Source Code Pro', monospace; font-size: 14px; background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; padding: 18px 20px; line-height: 2.1; color: #2B2A27; }
+.steps .row { display: flex; gap: 8px; }
+.steps .label { color: #9E9086; font-size: 11px; min-width: 52px; padding-top: 3px; }
+.token { display: inline-block; padding: 3px 8px; border-radius: 5px; margin-right: 4px; font-size: 12px; font-weight: 600; }
+.tk-shown { background: rgba(224,122,89,0.14); color: #E07A59; }
+.tk-hidden { background: rgba(158,144,134,0.18); color: #9E9086; }
+.formula { margin-top: 20px; font-family: 'Source Code Pro', monospace; font-size: 13px; color: #4A3F35; background: rgba(43,42,39,0.05); padding: 12px 16px; border-radius: 8px; line-height: 1.6; }
+.formula .hl { color: #E07A59; font-weight: 700; }
+.right-col { opacity: 0; animation: fadeInContent 0.8s 0.3s ease-out forwards; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+.right-col h3 { font-size: 14px; color: #5D4E42; margin: 0 0 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; align-self: flex-start; }
+.mask-grid { display: grid; grid-template-columns: repeat(4, 68px); grid-template-rows: repeat(4, 60px); gap: 4px; padding: 14px; background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; }
+.mcell { display: flex; align-items: center; justify-content: center; border-radius: 5px; font-family: 'Source Code Pro', monospace; font-size: 13px; font-weight: 600; }
+.allow { background: #E07A59; color: #F7F4EF; }
+.block { background: rgba(158,144,134,0.18); color: #9E9086; }
+.axes { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 12px; color: #5D4E42; }
+.legend { display: flex; gap: 14px; font-size: 11px; font-family: 'Inter', sans-serif; color: #5D4E42; }
+.legend .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 5px; }
+.why { margin-top: 16px; background: rgba(159,211,184,0.18); border-left: 3px solid #9FD3B8; padding: 12px 16px; font-size: 13px; color: #4A3F35; line-height: 1.5; border-radius: 0 8px 8px 0; max-width: 440px; }
+.why strong { color: #2B2A27; font-weight: 700; }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 1 · Attention from scratch</div>
+  <h1>Masked Self-Attention — don't peek at the future</h1>
+  <div class="takeaway">To train a language model in parallel, hide future tokens with a <strong>causal mask</strong> — an upper-triangular matrix of <code style="font-family:'Source Code Pro',monospace;">−∞</code>.</div>
+  <div class="content">
+    <div class="left-col">
+      <h3>Predicting "I like you" step by step</h3>
+      <div class="steps">
+        <div class="row"><span class="label">step 1</span><span><span class="token tk-shown">&lt;BOS&gt;</span><span class="token tk-hidden">···</span><span class="token tk-hidden">···</span><span class="token tk-hidden">···</span>→ predict <strong>I</strong></span></div>
+        <div class="row"><span class="label">step 2</span><span><span class="token tk-shown">&lt;BOS&gt;</span><span class="token tk-shown">I</span><span class="token tk-hidden">···</span><span class="token tk-hidden">···</span>→ predict <strong>like</strong></span></div>
+        <div class="row"><span class="label">step 3</span><span><span class="token tk-shown">&lt;BOS&gt;</span><span class="token tk-shown">I</span><span class="token tk-shown">like</span><span class="token tk-hidden">···</span>→ predict <strong>you</strong></span></div>
+        <div class="row"><span class="label">step 4</span><span><span class="token tk-shown">&lt;BOS&gt;</span><span class="token tk-shown">I</span><span class="token tk-shown">like</span><span class="token tk-shown">you</span>→ predict <strong>&lt;EOS&gt;</strong></span></div>
+      </div>
+      <div class="formula">scores = scores + torch.<span class="hl">triu</span>(full(T,T, -inf), diagonal=1)<br/>attn = softmax(scores, dim=-1)</div>
+    </div>
+    <div class="right-col">
+      <h3>Causal mask — upper triangular</h3>
+      <div class="mask-grid">
+        <div class="mcell allow">0</div><div class="mcell block">−∞</div><div class="mcell block">−∞</div><div class="mcell block">−∞</div>
+        <div class="mcell allow">0</div><div class="mcell allow">0</div><div class="mcell block">−∞</div><div class="mcell block">−∞</div>
+        <div class="mcell allow">0</div><div class="mcell allow">0</div><div class="mcell allow">0</div><div class="mcell block">−∞</div>
+        <div class="mcell allow">0</div><div class="mcell allow">0</div><div class="mcell allow">0</div><div class="mcell allow">0</div>
+      </div>
+      <div class="axes">
+        <div class="legend">
+          <div><span class="sw" style="background:#E07A59;"></span>allowed (past)</div>
+          <div><span class="sw" style="background:rgba(158,144,134,0.3);"></span>blocked (future)</div>
+        </div>
+      </div>
+      <div class="why"><strong>Why it exists:</strong> lets us train every position in <strong>parallel</strong> on one forward pass, instead of token-by-token like an RNN.</div>
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>08 / 16</div></div>
+</div>
+</body>
+</html>

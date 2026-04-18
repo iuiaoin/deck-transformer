@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Self-Attention</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&family=Noto+Serif:ital@1&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 56px 80px 80px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+h1 { font-size: 42px; font-weight: 700; color: #2B2A27; margin: 0 0 14px; letter-spacing: -0.8px; }
+.takeaway { font-size: 18px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 980px; margin: 0 0 30px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.content { display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items: center; height: 440px; }
+.left-col { opacity: 0; animation: fadeInContent 0.7s 0.15s ease-out forwards; }
+.left-col h3 { font-size: 15px; color: #5D4E42; margin: 0 0 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+.eq-box { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 12px; padding: 22px 24px; font-family: 'Noto Serif', 'Times New Roman', serif; font-size: 24px; color: #2B2A27; line-height: 2.1; margin-bottom: 20px; }
+.eq-box .qkv { color: #E07A59; font-weight: 600; }
+.eq-box .w { color: #9FD3B8; font-weight: 600; }
+.eq-box .x { color: #2B2A27; font-weight: 600; }
+.eq-box .comma { color: #9E9086; font-size: 20px; }
+.note { font-size: 14px; color: #5D4E42; line-height: 1.55; }
+.note strong { color: #2B2A27; font-weight: 700; }
+.note .pill { display: inline-block; font-family: 'Source Code Pro', monospace; font-size: 11px; background: rgba(224,122,89,0.14); color: #E07A59; padding: 2px 8px; border-radius: 6px; font-weight: 600; margin: 0 2px; }
+.heatmap-wrap { opacity: 0; animation: fadeInContent 0.8s 0.3s ease-out forwards; text-align: center; }
+.heatmap { display: inline-grid; grid-template-columns: 60px repeat(4, 68px); grid-template-rows: 40px repeat(4, 60px); gap: 3px; padding: 12px; background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; }
+.cell { display: flex; align-items: center; justify-content: center; font-family: 'Source Code Pro', monospace; font-size: 12px; color: #F7F4EF; border-radius: 4px; font-weight: 600; }
+.corner { background: transparent; }
+.hdr-col { background: transparent; color: #2B2A27; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px; }
+.hdr-row { background: transparent; color: #2B2A27; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px; justify-content: flex-end; padding-right: 6px; }
+.c0 { background: rgba(224,122,89,0.15); color: #2B2A27; }
+.c1 { background: rgba(224,122,89,0.35); color: #2B2A27; }
+.c2 { background: rgba(224,122,89,0.55); }
+.c3 { background: rgba(224,122,89,0.78); }
+.c4 { background: rgba(224,122,89,0.95); }
+.heatmap-wrap .caption { margin-top: 12px; font-size: 12px; color: #5D4E42; line-height: 1.5; max-width: 480px; margin-left: auto; margin-right: auto; }
+.heatmap-wrap .caption strong { color: #E07A59; font-weight: 700; }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 1 · Attention from scratch</div>
+  <h1>Self-Attention — the sequence looks at itself</h1>
+  <div class="takeaway">Every token produces its own <strong>Q, K, V</strong> from the <em>same</em> input — so every token can attend to every other token in one matmul.</div>
+  <div class="content">
+    <div class="left-col">
+      <h3>Same input X → three projections</h3>
+      <div class="eq-box">
+        <span class="qkv">Q</span> = <span class="x">X</span> <span class="w">W<sub>Q</sub></span><span class="comma">,</span> &nbsp;
+        <span class="qkv">K</span> = <span class="x">X</span> <span class="w">W<sub>K</sub></span><span class="comma">,</span> &nbsp;
+        <span class="qkv">V</span> = <span class="x">X</span> <span class="w">W<sub>V</sub></span>
+      </div>
+      <p class="note">In code, self-attention is literally <span class="pill">attention(x, x, x)</span> — the input plays all three roles. The three W matrices are learned parameters that <strong>separate the input into question, index, and payload roles</strong>.</p>
+      <p class="note" style="margin-top:14px;"><strong>Why it matters:</strong> distance in the sentence no longer matters — position 0 and position 999 are <strong>one matmul apart</strong>, unlike an RNN that has to walk through every step.</p>
+    </div>
+    <div class="heatmap-wrap">
+      <h3 style="text-align:left; font-size:15px; color:#5D4E42; margin:0 0 12px; font-weight:600; text-transform:uppercase; letter-spacing:1.5px;">Attention for "sat"</h3>
+      <div class="heatmap">
+        <div class="cell corner"></div>
+        <div class="cell hdr-col">The</div><div class="cell hdr-col">cat</div><div class="cell hdr-col">sat</div><div class="cell hdr-col">down</div>
+        <div class="cell hdr-row">The</div>
+        <div class="cell c4">.71</div><div class="cell c1">.12</div><div class="cell c1">.10</div><div class="cell c0">.07</div>
+        <div class="cell hdr-row">cat</div>
+        <div class="cell c1">.14</div><div class="cell c4">.63</div><div class="cell c2">.15</div><div class="cell c0">.08</div>
+        <div class="cell hdr-row" style="color:#E07A59;">sat</div>
+        <div class="cell c0">.04</div><div class="cell c4">.62</div><div class="cell c2">.22</div><div class="cell c1">.12</div>
+        <div class="cell hdr-row">down</div>
+        <div class="cell c0">.06</div><div class="cell c2">.24</div><div class="cell c3">.43</div><div class="cell c2">.27</div>
+      </div>
+      <p class="caption">The row for <strong>"sat"</strong> lights up on <strong>"cat"</strong> — the subject it's bound to — even though they're not adjacent.</p>
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>07 / 16</div></div>
+</div>
+</body>
+</html>

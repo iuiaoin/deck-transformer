@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Q, K, V</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 60px 90px 80px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px; }
+h1 { font-size: 44px; font-weight: 700; color: #2B2A27; margin: 0 0 16px; letter-spacing: -0.8px; }
+.takeaway { font-size: 19px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 980px; margin: 0 0 40px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.lanes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; margin-bottom: 28px; }
+.lane { background: #FBF8F5; border: 2px solid #E07A59; border-radius: 12px; padding: 22px 22px 20px; position: relative; opacity: 0; animation: slideInUp 0.6s ease-out forwards; }
+.lane:nth-child(1) { animation-delay: 0.15s; }
+.lane:nth-child(2) { animation-delay: 0.28s; border-color: #9FD3B8; }
+.lane:nth-child(3) { animation-delay: 0.4s; border-color: #C9B9AC; }
+.lane .glyph { position: absolute; top: -20px; left: 18px; width: 44px; height: 44px; border-radius: 50%; background: #E07A59; color: #F7F4EF; display: flex; align-items: center; justify-content: center; font-family: 'Source Code Pro', monospace; font-size: 22px; font-weight: 700; }
+.lane:nth-child(2) .glyph { background: #9FD3B8; color: #2B2A27; }
+.lane:nth-child(3) .glyph { background: #5D4E42; color: #F7F4EF; }
+.lane h3 { font-size: 22px; color: #2B2A27; margin: 16px 0 4px; font-weight: 700; }
+.lane .role { font-size: 12px; color: #9E9086; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 12px; font-weight: 600; }
+.lane p { font-size: 15px; color: #5D4E42; line-height: 1.5; margin: 0 0 16px; }
+.vec { font-family: 'Source Code Pro', monospace; font-size: 12px; color: #4A3F35; background: rgba(43,42,39,0.05); padding: 10px 12px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vec .dim { color: #9E9086; font-size: 10px; display: block; margin-top: 4px; }
+.gloss { font-size: 13px; color: #5D4E42; border: 1px dashed #C9B9AC; border-radius: 8px; padding: 10px 16px; background: rgba(251,248,245,0.6); max-width: 900px; }
+.gloss strong { color: #E07A59; font-weight: 700; }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 1 · Attention from scratch</div>
+  <h1>The three variables — Query, Key, Value</h1>
+  <div class="takeaway"><strong>Q, K, V are just vectors.</strong> Their relationships are learned during training — not hand-written rules.</div>
+  <div class="lanes">
+    <div class="lane">
+      <div class="glyph">Q</div>
+      <h3>Query</h3>
+      <div class="role">what am I looking for?</div>
+      <p>The vector that asks the question. In self-attention, every token produces its own query about its neighbors.</p>
+      <div class="vec">[ 0.12, −0.03, 0.47, …, 0.08 ]<span class="dim">shape: (d_model,) — e.g. 512-dim</span></div>
+    </div>
+    <div class="lane">
+      <div class="glyph">K</div>
+      <h3>Key</h3>
+      <div class="role">how does each entry advertise itself?</div>
+      <p>What a candidate says it is "about". Similarity between Q and K determines how much that entry matters.</p>
+      <div class="vec">[ −0.22, 0.31, 0.05, …, −0.11 ]<span class="dim">one key per token in the sequence</span></div>
+    </div>
+    <div class="lane">
+      <div class="glyph">V</div>
+      <h3>Value</h3>
+      <div class="role">what do I actually get back?</div>
+      <p>The payload — the information that gets blended into the output once the weights are computed.</p>
+      <div class="vec">[ 0.04, 0.19, −0.37, …, 0.52 ]<span class="dim">same token count, same d_model</span></div>
+    </div>
+  </div>
+  <div class="gloss"><strong>jargon:</strong> an <em>embedding</em> is a learned dense vector that represents a token in N-dimensional space — semantically similar tokens end up near each other.</div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>04 / 16</div></div>
+</div>
+</body>
+</html>

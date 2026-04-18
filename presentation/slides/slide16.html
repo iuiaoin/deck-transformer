@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Key Takeaways</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&family=Noto+Serif:ital@1&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 56px 80px 80px; display: flex; flex-direction: column; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 80px rgba(224,122,89,0.15); } 50% { box-shadow: 0 0 120px rgba(224,122,89,0.3); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+h1 { font-size: 44px; font-weight: 700; color: #2B2A27; margin: 0 0 12px; letter-spacing: -1px; }
+.lead { font-size: 20px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 1000px; margin: 0 0 30px; font-style: italic; }
+.lead strong { color: #2B2A27; font-weight: 700; font-style: normal; }
+.main-row { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; flex: 1; align-items: center; }
+.bullets { display: flex; flex-direction: column; gap: 14px; opacity: 0; animation: fadeInContent 0.8s 0.15s ease-out forwards; }
+.bullet { display: flex; gap: 16px; align-items: flex-start; }
+.bullet .num { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: #E07A59; color: #F7F4EF; font-family: 'Source Code Pro', monospace; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.bullet:nth-child(2) .num { background: #9FD3B8; color: #2B2A27; }
+.bullet:nth-child(3) .num { background: #5D4E42; }
+.bullet:nth-child(4) .num { background: #2B2A27; }
+.bullet h4 { margin: 4px 0 3px; font-size: 16px; color: #2B2A27; font-weight: 700; }
+.bullet p { margin: 0; font-size: 13px; color: #5D4E42; line-height: 1.55; }
+.bullet p strong { color: #2B2A27; font-weight: 700; }
+.formula-hero { text-align: center; opacity: 0; animation: fadeInContent 1s 0.4s ease-out forwards, pulseGlow 4s 1s ease-in-out infinite; background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 20px; padding: 38px 28px; }
+.formula-hero .lbl { font-size: 11px; color: #9E9086; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 16px; }
+.formula-hero .formula { font-family: 'Noto Serif', 'Times New Roman', serif; font-size: 36px; color: #2B2A27; line-height: 1.3; }
+.formula-hero .formula .fn { font-family: 'Inter', sans-serif; font-style: normal; color: #E07A59; font-weight: 700; font-size: 24px; }
+.formula-hero .formula .qkv { color: #E07A59; font-weight: 600; }
+.formula-hero .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; font-size: 28px; margin: 0 3px; }
+.formula-hero .frac .num, .formula-hero .frac .den { padding: 0 6px; line-height: 1.1; }
+.formula-hero .frac .bar { width: 100%; height: 1.5px; background: #2B2A27; margin: 2px 0; }
+.formula-hero .caption { margin-top: 20px; font-size: 13px; color: #5D4E42; font-style: italic; line-height: 1.55; }
+.cta { margin-top: 22px; background: #2B2A27; color: #F7F4EF; padding: 14px 22px; border-radius: 10px; font-size: 13px; line-height: 1.55; opacity: 0; animation: fadeInContent 0.8s 0.8s ease-out forwards; }
+.cta strong { color: #E07A59; font-weight: 700; }
+.cta code { font-family: 'Source Code Pro', monospace; font-size: 12px; color: #9FD3B8; }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Wrap-up</div>
+  <h1>Key takeaways</h1>
+  <div class="lead"><strong>Attention is all you need</strong> — literally the only operation required to build the best sequence models we have today.</div>
+  <div class="main-row">
+    <div class="bullets">
+      <div class="bullet">
+        <div class="num">1</div>
+        <div>
+          <h4>Attention = soft dictionary lookup</h4>
+          <p>Similarity between Q and K → softmax → <strong>weighted sum of values</strong>. That's the whole idea.</p>
+        </div>
+      </div>
+      <div class="bullet">
+        <div class="num">2</div>
+        <div>
+          <h4>Multi-head = many perspectives in parallel</h4>
+          <p>Different projections capture <strong>different kinds of relationships</strong> — syntax, coreference, long-range binding.</p>
+        </div>
+      </div>
+      <div class="bullet">
+        <div class="num">3</div>
+        <div>
+          <h4>The architecture is modular</h4>
+          <p>Positional Encoding + Self-Attn + FFN + LayerNorm + Residual. <strong>Stack to taste.</strong></p>
+        </div>
+      </div>
+      <div class="bullet">
+        <div class="num">4</div>
+        <div>
+          <h4>Three paradigms, one core</h4>
+          <p><strong>BERT</strong> (understand), <strong>GPT</strong> (generate), <strong>T5</strong> (both) — all are edits of the same building blocks.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="formula-hero">
+        <div class="lbl">the whole story in one line</div>
+        <div class="formula">
+          <span class="fn">softmax</span><span style="font-size:40px;">(</span>
+          <span class="frac"><span class="num"><span class="qkv">Q</span><span class="qkv">K</span><sup style="font-size:16px;">⊤</sup></span><span class="bar"></span><span class="den">√d<sub style="font-size:16px;">k</sub></span></span>
+          <span style="font-size:40px;">)</span> <span class="qkv">V</span>
+        </div>
+        <div class="caption">everything else is just plumbing.</div>
+      </div>
+      <div class="cta">
+        <strong>Next step →</strong> implement <code>attention(q, k, v)</code> from scratch in ~10 lines and watch a tiny Transformer memorize a toy dataset.
+      </div>
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>16 / 16</div></div>
+</div>
+</body>
+</html>

@@ -4,7 +4,7 @@ A technical sharing presentation — **"Understanding Transformer Architecture: 
 
 ## Overview
 
-15 HTML slides targeting software engineers with limited deep learning background. The deck covers:
+16 HTML slides targeting software engineers with limited deep learning background. The deck covers:
 
 1. **Attention Mechanism** — From dictionary-lookup analogy to Scaled Dot-Product Attention, Self-Attention, Masked Self-Attention, Cross-Attention, and Multi-Head Attention (~50% of slides)
 2. **Transformer Architecture** — Positional Encoding, FFN, LayerNorm, Residual Connection, Encoder-Decoder wiring, and PyTorch `nn.Transformer` API
@@ -21,7 +21,7 @@ Open `presentation/index.html` in a browser to view the slides.
 ├── PROMPT.md                    # Original prompt used to generate the deck
 ├── presentation/
 │   ├── index.html               # Slide viewer
-│   └── slides/                  # 15 individual slide HTML files (1280×720, 16:9)
+│   └── slides/                  # 16 individual slide HTML files (1280×720, 16:9)
 └── resources/                   # Reference materials
     ├── llm-from-scratch/        # LLM book chapters (Transformer, pre-training models)
     └── transformer-architecture/ # PyTorch Transformer API walkthrough & diagrams

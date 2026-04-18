@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Three Paradigms</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 52px 70px 76px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px; }
+h1 { font-size: 40px; font-weight: 700; color: #2B2A27; margin: 0 0 12px; letter-spacing: -0.8px; }
+.takeaway { font-size: 17px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 1140px; margin: 0 0 26px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; margin-bottom: 22px; }
+.col { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 14px; padding: 22px 22px 20px; display: flex; flex-direction: column; align-items: stretch; opacity: 0; animation: slideInUp 0.6s ease-out forwards; }
+.col:nth-child(1) { animation-delay: 0.1s; }
+.col:nth-child(2) { animation-delay: 0.22s; }
+.col:nth-child(3) { animation-delay: 0.34s; }
+.silhouette { height: 76px; display: flex; justify-content: center; align-items: flex-end; gap: 4px; margin-bottom: 14px; }
+.stack { width: 34px; display: flex; flex-direction: column; gap: 2px; justify-content: flex-end; }
+.stack .layer { height: 10px; border-radius: 2px; }
+.enc-layer { background: rgba(159,211,184,0.75); }
+.dec-layer { background: rgba(224,122,89,0.7); }
+.dim { background: rgba(158,144,134,0.15); }
+.stack .lbl { font-size: 9px; color: #9E9086; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; text-align: center; margin-top: 4px; }
+.badge { align-self: flex-start; font-family: 'Source Code Pro', monospace; font-size: 10px; color: #F7F4EF; padding: 4px 10px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+.badge-bert { background: #9FD3B8; color: #2B2A27; }
+.badge-gpt { background: #E07A59; }
+.badge-t5 { background: #2B2A27; }
+.col h3 { font-size: 22px; color: #2B2A27; margin: 0 0 3px; font-weight: 700; letter-spacing: -0.3px; }
+.col .subtitle { font-size: 12px; color: #9E9086; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.row { padding: 8px 0; border-top: 1px solid #EAE0D9; font-size: 12px; color: #5D4E42; line-height: 1.5; }
+.row:first-of-type { border-top: none; padding-top: 4px; }
+.row .k { font-size: 10px; color: #9E9086; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 2px; }
+.row .v { color: #2B2A27; font-weight: 600; font-size: 13px; }
+.row .v code { font-family: 'Source Code Pro', monospace; font-size: 11px; color: #E07A59; font-weight: 700; }
+.gloss-row { display: flex; gap: 14px; }
+.gloss { flex: 1; font-size: 12px; color: #5D4E42; border: 1px dashed #C9B9AC; border-radius: 8px; padding: 9px 14px; background: rgba(251,248,245,0.6); line-height: 1.5; }
+.gloss strong { color: #E07A59; font-weight: 700; }
+.footer { position: absolute; bottom: 24px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 3 · What Transformer spawned</div>
+  <h1>Three paradigms from one architecture</h1>
+  <div class="takeaway">By keeping <strong>half</strong> — or both halves — of the Transformer, you get the three families that dominate modern NLP.</div>
+  <div class="cols">
+    <div class="col">
+      <div class="silhouette">
+        <div class="stack">
+          <div class="layer enc-layer"></div><div class="layer enc-layer"></div><div class="layer enc-layer"></div><div class="layer enc-layer"></div><div class="layer enc-layer"></div><div class="layer enc-layer"></div>
+          <div class="lbl">encoder</div>
+        </div>
+        <div class="stack">
+          <div class="layer dim"></div><div class="layer dim"></div><div class="layer dim"></div><div class="layer dim"></div><div class="layer dim"></div><div class="layer dim"></div>
+          <div class="lbl">— dropped —</div>
+        </div>
+      </div>
+      <span class="badge badge-bert">ENCODER-ONLY</span>
+      <h3>BERT</h3>
+      <div class="subtitle">Google · 2018</div>
+      <div class="row"><div class="k">Attention</div><div class="v">Bidirectional self-attn</div></div>
+      <div class="row"><div class="k">Pre-train task</div><div class="v"><code>MLM</code> — masked fill-in</div></div>
+      <div class="row"><div class="k">Best at</div><div class="v">Understanding: classify, NER, QA</div></div>
+    </div>
+    <div class="col">
+      <div class="silhouette">
+        <div class="stack">
+          <div class="layer dim"></div><div class="layer dim"></div><div class="layer dim"></div><div class="layer dim"></div><div class="layer dim"></div><div class="layer dim"></div>
+          <div class="lbl">— dropped —</div>
+        </div>
+        <div class="stack">
+          <div class="layer dec-layer"></div><div class="layer dec-layer"></div><div class="layer dec-layer"></div><div class="layer dec-layer"></div><div class="layer dec-layer"></div><div class="layer dec-layer"></div>
+          <div class="lbl">decoder</div>
+        </div>
+      </div>
+      <span class="badge badge-gpt">DECODER-ONLY</span>
+      <h3>GPT</h3>
+      <div class="subtitle">OpenAI · 2018 → ChatGPT</div>
+      <div class="row"><div class="k">Attention</div><div class="v">Causal self-attn (masked)</div></div>
+      <div class="row"><div class="k">Pre-train task</div><div class="v"><code>CLM</code> — next-token prediction</div></div>
+      <div class="row"><div class="k">Best at</div><div class="v">Generation: chat, code, completion</div></div>
+    </div>
+    <div class="col">
+      <div class="silhouette">
+        <div class="stack">
+          <div class="layer enc-layer"></div><div class="layer enc-layer"></div><div class="layer enc-layer"></div><div class="layer enc-layer"></div><div class="layer enc-layer"></div><div class="layer enc-layer"></div>
+          <div class="lbl">encoder</div>
+        </div>
+        <div class="stack">
+          <div class="layer dec-layer"></div><div class="layer dec-layer"></div><div class="layer dec-layer"></div><div class="layer dec-layer"></div><div class="layer dec-layer"></div><div class="layer dec-layer"></div>
+          <div class="lbl">decoder</div>
+        </div>
+      </div>
+      <span class="badge badge-t5">ENCODER-DECODER</span>
+      <h3>T5</h3>
+      <div class="subtitle">Google · 2019</div>
+      <div class="row"><div class="k">Attention</div><div class="v">Enc: bidirectional · Dec: causal + cross</div></div>
+      <div class="row"><div class="k">Pre-train task</div><div class="v">Span corruption (text-to-text)</div></div>
+      <div class="row"><div class="k">Best at</div><div class="v">Seq2seq: translate, summarize</div></div>
+    </div>
+  </div>
+  <div class="gloss-row">
+    <div class="gloss"><strong>MLM:</strong> "fill-in-the-blank" — randomly mask 15% of tokens and predict them from both sides.</div>
+    <div class="gloss"><strong>CLM:</strong> "predict the next word" — only uses left context. This is what every modern LLM trains on.</div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>15 / 16</div></div>
+</div>
+</body>
+</html>

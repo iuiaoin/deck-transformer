@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FFN · LayerNorm · Residual</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 56px 80px 80px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+h1 { font-size: 42px; font-weight: 700; color: #2B2A27; margin: 0 0 14px; letter-spacing: -0.8px; }
+.takeaway { font-size: 18px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 1060px; margin: 0 0 28px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; margin-bottom: 22px; }
+.card { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 12px; padding: 22px 22px 20px; opacity: 0; animation: slideInUp 0.6s ease-out forwards; display: flex; flex-direction: column; gap: 10px; }
+.card:nth-child(1) { animation-delay: 0.12s; }
+.card:nth-child(2) { animation-delay: 0.24s; }
+.card:nth-child(3) { animation-delay: 0.36s; }
+.card .icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(224,122,89,0.15); display: flex; align-items: center; justify-content: center; font-family: 'Source Code Pro', monospace; font-size: 18px; color: #E07A59; font-weight: 700; }
+.card:nth-child(2) .icon { background: rgba(159,211,184,0.3); color: #2B2A27; }
+.card:nth-child(3) .icon { background: rgba(74,63,53,0.12); color: #4A3F35; }
+.card h3 { font-size: 20px; color: #2B2A27; margin: 0; font-weight: 700; }
+.card .sub { font-size: 11px; color: #9E9086; text-transform: uppercase; letter-spacing: 1.2px; margin-top: -6px; font-weight: 600; }
+.card .mini-formula { font-family: 'Source Code Pro', monospace; font-size: 12px; color: #E07A59; background: rgba(43,42,39,0.05); padding: 8px 12px; border-radius: 6px; font-weight: 600; line-height: 1.55; }
+.card p { margin: 0; font-size: 13px; color: #5D4E42; line-height: 1.55; }
+.card p strong { color: #2B2A27; font-weight: 700; }
+.card .gloss { font-size: 11px; color: #5D4E42; border: 1px dashed #C9B9AC; border-radius: 6px; padding: 8px 12px; background: rgba(251,248,245,0.6); line-height: 1.5; }
+.card .gloss strong { color: #E07A59; font-weight: 700; }
+.bottom-bar { background: #2B2A27; border-radius: 10px; padding: 16px 22px; display: flex; align-items: center; gap: 20px; opacity: 0; animation: fadeInContent 0.8s 0.5s ease-out forwards; }
+.bottom-bar .tag { font-size: 11px; color: #E07A59; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; flex-shrink: 0; }
+.bottom-bar .eq { font-family: 'Source Code Pro', monospace; font-size: 14px; color: #F7F4EF; line-height: 1.55; }
+.bottom-bar .eq .hl { color: #9FD3B8; font-weight: 600; }
+.bottom-bar .eq .op { color: #E07A59; }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 2 · Putting it together</div>
+  <h1>The three glue components — FFN · LayerNorm · Residual</h1>
+  <div class="takeaway">Between attention layers, three small pieces do the heavy lifting of <strong>stable training</strong> in a deep stack.</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">FFN</div>
+      <h3>Feed-Forward Network</h3>
+      <div class="sub">2-layer MLP, per position</div>
+      <div class="mini-formula">Linear(d→4d) · ReLU · Linear(4d→d)</div>
+      <p>Mixes features <strong>within</strong> each token. Attention mixes <strong>across</strong> tokens — FFN adds non-linear depth position by position.</p>
+      <div class="gloss"><strong>shared weights:</strong> the same FFN is applied to every position (like a 1×1 conv in vision).</div>
+    </div>
+    <div class="card">
+      <div class="icon">LN</div>
+      <h3>Layer Normalization</h3>
+      <div class="sub">per-token stabilization</div>
+      <div class="mini-formula">(x − μ) / σ  ·  γ  +  β</div>
+      <p>Normalizes each token's feature vector to <strong>mean 0, variance 1</strong>. Keeps activations controlled as signals flow through 6, 12, or 96 layers.</p>
+      <div class="gloss"><strong>vs. BatchNorm:</strong> LayerNorm normalizes across features of one token — works with variable-length sequences.</div>
+    </div>
+    <div class="card">
+      <div class="icon">⊕</div>
+      <h3>Residual Connection</h3>
+      <div class="sub">skip-around shortcut</div>
+      <div class="mini-formula">x = x  +  Sublayer(x)</div>
+      <p>Lets the sublayer learn a <strong>delta</strong> rather than rewrite everything. Also guarantees the <strong>position encoding survives</strong> all the way to the top.</p>
+      <div class="gloss"><strong>why it works:</strong> without residuals, training 24+ layers is unstable — gradients either vanish or explode.</div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <div class="tag">Pre-Norm pattern (modern LLMs)</div>
+    <div class="eq">
+      x = x <span class="op">+</span> <span class="hl">Attention</span>(<span class="hl">LN</span>(x)) ; &nbsp;&nbsp; x = x <span class="op">+</span> <span class="hl">FFN</span>(<span class="hl">LN</span>(x))
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>12 / 16</div></div>
+</div>
+</body>
+</html>

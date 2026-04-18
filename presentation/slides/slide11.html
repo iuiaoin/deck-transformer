@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Positional Encoding</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&family=Noto+Serif:ital@1&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 56px 80px 80px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+h1 { font-size: 42px; font-weight: 700; color: #2B2A27; margin: 0 0 14px; letter-spacing: -0.8px; }
+.takeaway { font-size: 18px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 1060px; margin: 0 0 26px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.content { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; height: 440px; }
+.left-col { display: flex; flex-direction: column; gap: 16px; opacity: 0; animation: fadeInContent 0.7s 0.15s ease-out forwards; }
+.example-box { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; padding: 14px 18px; font-family: 'Source Code Pro', monospace; font-size: 13px; color: #5D4E42; line-height: 1.7; }
+.example-box .hl { color: #E07A59; font-weight: 700; }
+.example-box .eq { color: #9E9086; }
+.formulas { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; padding: 18px 20px; }
+.formulas h3 { font-size: 12px; color: #9E9086; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+.formula-line { font-family: 'Noto Serif', 'Times New Roman', serif; font-size: 19px; color: #2B2A27; line-height: 2; }
+.formula-line .c-sin { color: #E07A59; font-weight: 700; font-style: italic; }
+.formula-line .c-cos { color: #9FD3B8; font-weight: 700; font-style: italic; }
+.formula-line .var { font-style: italic; }
+.props { display: flex; flex-direction: column; gap: 10px; opacity: 0; animation: fadeInContent 0.7s 0.3s ease-out forwards; }
+.props h3 { font-size: 12px; color: #9E9086; margin: 0 0 4px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+.prop { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; padding: 13px 16px; display: flex; gap: 12px; align-items: flex-start; }
+.prop .num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #E07A59; color: #F7F4EF; font-family: 'Source Code Pro', monospace; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+.prop h4 { margin: 0 0 3px; font-size: 14px; color: #2B2A27; font-weight: 700; }
+.prop p { margin: 0; font-size: 12px; color: #5D4E42; line-height: 1.5; }
+.stripe-wrap { margin-top: 8px; }
+.stripe-wrap .lbl { font-size: 10px; color: #9E9086; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 700; margin-bottom: 4px; }
+.stripe { width: 100%; height: 40px; border-radius: 4px; background:
+  repeating-linear-gradient(90deg,
+    rgba(224,122,89,0.9) 0%, rgba(224,122,89,0.5) 3%, rgba(159,211,184,0.6) 6%, rgba(159,211,184,0.9) 9%, rgba(224,122,89,0.6) 12%,
+    rgba(224,122,89,0.9) 14%, rgba(159,211,184,0.5) 17%, rgba(224,122,89,0.5) 20%, rgba(159,211,184,0.8) 24%, rgba(224,122,89,0.8) 28%,
+    rgba(159,211,184,0.5) 32%, rgba(224,122,89,0.9) 36%, rgba(159,211,184,0.9) 40%, rgba(224,122,89,0.5) 44%, rgba(159,211,184,0.6) 48%,
+    rgba(224,122,89,0.9) 52%, rgba(159,211,184,0.8) 56%, rgba(224,122,89,0.8) 60%, rgba(159,211,184,0.5) 64%, rgba(224,122,89,0.6) 68%,
+    rgba(159,211,184,0.9) 72%, rgba(224,122,89,0.7) 76%, rgba(159,211,184,0.6) 80%, rgba(224,122,89,0.9) 84%, rgba(159,211,184,0.8) 88%,
+    rgba(224,122,89,0.5) 92%, rgba(159,211,184,0.9) 96%, rgba(224,122,89,0.7) 100%); }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 2 · Putting it together</div>
+  <h1>Positional Encoding — attention has no sense of order</h1>
+  <div class="takeaway">Attention is <strong>permutation-equivariant</strong> — "I love you" and "you love I" look identical. We inject order by <strong>adding a position-specific vector</strong> to every embedding.</div>
+  <div class="content">
+    <div class="left-col">
+      <div class="example-box">
+        x<sub>pos</sub> = <span class="hl">embedding(token)</span> <span class="eq">+</span> <span class="hl">PE(pos)</span><br/>
+        <span style="color:#9E9086; font-size:11px;"># one 512-dim vector per position, added element-wise</span>
+      </div>
+      <div class="formulas">
+        <h3>Sinusoidal formula</h3>
+        <div class="formula-line">
+          PE<sub>(<span class="var">pos</span>, 2<span class="var">i</span>)</sub> = <span class="c-sin">sin</span>(&thinsp;<span class="var">pos</span> / 10000<sup>2<span class="var">i</span>/<span class="var">d</span></sup>&thinsp;)
+        </div>
+        <div class="formula-line">
+          PE<sub>(<span class="var">pos</span>, 2<span class="var">i</span>+1)</sub> = <span class="c-cos">cos</span>(&thinsp;<span class="var">pos</span> / 10000<sup>2<span class="var">i</span>/<span class="var">d</span></sup>&thinsp;)
+        </div>
+      </div>
+      <div class="stripe-wrap">
+        <div class="lbl">PE matrix (seq_len × d_model)</div>
+        <div class="stripe"></div>
+      </div>
+    </div>
+    <div class="props">
+      <h3>Three design properties</h3>
+      <div class="prop">
+        <div class="num">1</div>
+        <div>
+          <h4>Deterministic</h4>
+          <p>Position 3 always gets the same vector — independent of sentence length.</p>
+        </div>
+      </div>
+      <div class="prop">
+        <div class="num">2</div>
+        <div>
+          <h4>Relative distance preserved</h4>
+          <p><code style="font-family:'Source Code Pro',monospace;font-size:11px;">PE(pos+k)</code> is a linear combo of <code style="font-family:'Source Code Pro',monospace;font-size:11px;">PE(pos)</code> — so "3 words apart" looks the same everywhere.</p>
+        </div>
+      </div>
+      <div class="prop">
+        <div class="num">3</div>
+        <div>
+          <h4>Generalizes beyond training length</h4>
+          <p>sin/cos are defined at every <em>pos</em> — the model can handle sequences longer than it ever saw.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>11 / 16</div></div>
+</div>
+</body>
+</html>

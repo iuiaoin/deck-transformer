@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agenda — Why This Matters</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 72px 90px 80px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 14px; }
+h1 { font-size: 46px; font-weight: 700; color: #2B2A27; margin: 0 0 18px; letter-spacing: -1px; line-height: 1.15; }
+.takeaway { font-size: 20px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 1000px; margin: 0 0 44px; border-left: 3px solid #E07A59; padding-left: 18px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; }
+.card { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 12px; padding: 26px 24px 24px; position: relative; opacity: 0; animation: slideInUp 0.6s ease-out forwards; }
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.22s; }
+.card:nth-child(3) { animation-delay: 0.34s; }
+.num { font-family: 'Source Code Pro', monospace; font-size: 42px; font-weight: 500; color: #E07A59; line-height: 1; margin-bottom: 14px; }
+.card h3 { font-size: 20px; font-weight: 700; color: #2B2A27; margin: 0 0 10px; line-height: 1.25; }
+.card p { font-size: 14px; color: #5D4E42; line-height: 1.55; margin: 0 0 10px; }
+.badge { display: inline-block; font-size: 11px; font-weight: 600; color: #E07A59; background: rgba(224,122,89,0.12); padding: 3px 10px; border-radius: 999px; letter-spacing: 0.5px; text-transform: uppercase; }
+.aside { margin-top: 36px; background: rgba(159,211,184,0.18); border-left: 3px solid #9FD3B8; padding: 14px 20px; font-size: 14px; color: #4A3F35; line-height: 1.5; max-width: 780px; font-style: italic; }
+.aside strong { color: #2B2A27; font-style: normal; }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Roadmap</div>
+  <h1>What we'll cover & why it matters</h1>
+  <div class="takeaway"><strong>Transformer replaced RNNs</strong> by making long-range dependencies parallelizable — and it is the foundation of every modern large language model.</div>
+  <div class="grid">
+    <div class="card">
+      <div class="num">01</div>
+      <h3>Attention from scratch</h3>
+      <p>Dictionary-lookup analogy → Scaled Dot-Product → Self / Masked / Cross / Multi-Head.</p>
+      <div class="badge">~50% of deck</div>
+    </div>
+    <div class="card">
+      <div class="num">02</div>
+      <h3>Putting it together</h3>
+      <p>Positional Encoding, FFN, LayerNorm, Residual, and PyTorch's <code style="font-family:'Source Code Pro',monospace;font-size:12px;color:#E07A59;">nn.Transformer</code> API.</p>
+      <div class="badge">Architecture</div>
+    </div>
+    <div class="card">
+      <div class="num">03</div>
+      <h3>Three paradigms</h3>
+      <p>Encoder-only (BERT), Decoder-only (GPT), Encoder-Decoder (T5) — three families, one core.</p>
+      <div class="badge">Takeaways</div>
+    </div>
+  </div>
+  <div class="aside"><strong>Why attention, not RNN?</strong> RNNs are sequential — GPU-unfriendly and forgetful of distant context. Attention is a single matmul — massively parallel and global.</div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>02 / 16</div></div>
+</div>
+</body>
+</html>

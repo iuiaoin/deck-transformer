@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Attention in Code</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap');
+body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #e0e0e0; font-family: 'Inter', sans-serif; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.slide { width: 1280px; height: 720px; background: #F7F4EF; position: relative; overflow: hidden; box-sizing: border-box; padding: 56px 80px 80px; }
+@keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.eyebrow { font-size: 13px; font-weight: 600; color: #E07A59; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+h1 { font-size: 42px; font-weight: 700; color: #2B2A27; margin: 0 0 14px; letter-spacing: -0.8px; }
+.takeaway { font-size: 18px; color: #5D4E42; font-weight: 500; line-height: 1.5; max-width: 980px; margin: 0 0 28px; border-left: 3px solid #E07A59; padding-left: 16px; }
+.takeaway strong { color: #2B2A27; font-weight: 700; }
+.content { display: grid; grid-template-columns: 1.35fr 1fr; gap: 36px; height: 460px; }
+.code-block { background: #2B2A27; color: #F7F4EF; border-radius: 12px; padding: 22px 26px; font-family: 'Source Code Pro', monospace; font-size: 16px; line-height: 1.7; box-shadow: 0 6px 20px rgba(0,0,0,0.1); overflow: hidden; opacity: 0; animation: fadeInContent 0.8s 0.15s ease-out forwards; }
+.code-block .kw { color: #E07A59; }
+.code-block .fn { color: #9FD3B8; }
+.code-block .str { color: #E8C07D; }
+.code-block .c { color: #8E7F72; font-style: italic; }
+.code-block .n { color: #DFB8A2; }
+.code-block .p { color: #BFB5AC; }
+.side { display: flex; flex-direction: column; gap: 18px; opacity: 0; animation: fadeInContent 0.8s 0.3s ease-out forwards; }
+.side .callout { background: #FBF8F5; border: 1px solid #EAE0D9; border-radius: 10px; padding: 16px 18px; font-size: 13px; color: #5D4E42; line-height: 1.55; }
+.side .callout h4 { margin: 0 0 6px; color: #2B2A27; font-size: 14px; font-weight: 700; letter-spacing: 0.4px; }
+.side .callout strong { color: #E07A59; font-weight: 700; font-family: 'Source Code Pro', monospace; }
+.shapes { background: rgba(159,211,184,0.18); border-left: 3px solid #9FD3B8; border-radius: 8px; padding: 14px 18px; font-family: 'Source Code Pro', monospace; font-size: 12px; color: #4A3F35; line-height: 1.65; }
+.shapes .label { font-family: 'Inter', sans-serif; font-size: 11px; color: #2B2A27; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.shapes .arrow { color: #E07A59; font-weight: 700; }
+.footer { position: absolute; bottom: 28px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 12px; color: #9E9086; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="eyebrow">Part 1 · Attention from scratch</div>
+  <h1>The whole formula — in a handful of lines</h1>
+  <div class="takeaway"><strong>Attention fits in five lines of PyTorch.</strong> Masking is the one trick to learn: set blocked positions to <code style="font-family:'Source Code Pro',monospace;">−∞</code> <em>before</em> softmax.</div>
+  <div class="content">
+    <div class="code-block"><span class="kw">def</span> <span class="fn">attention</span>(<span class="p">q</span>, <span class="p">k</span>, <span class="p">v</span>, <span class="p">mask</span>=<span class="kw">None</span>):
+    <span class="c"># q,k,v : (batch, seq_len, d_k)</span>
+    d_k = <span class="p">q</span>.size(-<span class="n">1</span>)
+    scores = torch.<span class="fn">matmul</span>(<span class="p">q</span>, <span class="p">k</span>.<span class="fn">transpose</span>(-<span class="n">2</span>, -<span class="n">1</span>)) / math.<span class="fn">sqrt</span>(d_k)
+    <span class="kw">if</span> mask <span class="kw">is not</span> <span class="kw">None</span>:
+        scores = scores.<span class="fn">masked_fill</span>(mask == <span class="n">0</span>, <span class="kw">float</span>(<span class="str">"-inf"</span>))
+    attn = F.<span class="fn">softmax</span>(scores, dim=-<span class="n">1</span>)
+    <span class="kw">return</span> torch.<span class="fn">matmul</span>(attn, <span class="p">v</span>), attn</div>
+    <div class="side">
+      <div class="callout">
+        <h4>Why mask <em>before</em> softmax?</h4>
+        After softmax, <strong>exp(−∞) = 0</strong> — blocked positions get exactly zero probability. Masking after softmax would leak information through the normalization.
+      </div>
+      <div class="shapes">
+        <div class="label">shape evolution</div>
+        Q: (B, T, d)&nbsp;&nbsp;<span class="arrow">×</span>&nbsp;&nbsp;K<sup>⊤</sup>: (B, d, T)<br/>
+        &nbsp;&nbsp;<span class="arrow">→</span>&nbsp;&nbsp;scores: (B, T, T)<br/>
+        scores <span class="arrow">×</span> V: (B, T, d)<br/>
+        &nbsp;&nbsp;<span class="arrow">→</span>&nbsp;&nbsp;output: (B, T, d)
+      </div>
+      <div class="callout" style="background: rgba(224,122,89,0.08); border-color: rgba(224,122,89,0.25);">
+        <h4>One function, many flavors</h4>
+        Same code powers <strong>self-attn</strong>, <strong>masked self-attn</strong>, and <strong>cross-attn</strong>. Only the q/k/v inputs and the mask change.
+      </div>
+    </div>
+  </div>
+  <div class="footer"><div>Transformer · Attention Is All You Need</div><div>06 / 16</div></div>
+</div>
+</body>
+</html>
